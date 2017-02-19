@@ -6,6 +6,7 @@ public class View extends PApplet{
 	
 	public static final int viewWidth = 800;
 	public static final int viewHeight = 600;
+	public static final int characterRadius = 10;
 
     public static void main(String[] args) {
         PApplet.main("kinematic_motion.View");
@@ -23,7 +24,7 @@ public class View extends PApplet{
         
     }
     
-    private void renderChar( Character c ) {
+    private void renderCharacter( Character c ) {
     	
     }
 	
