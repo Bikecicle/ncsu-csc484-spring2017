@@ -6,12 +6,13 @@ public class Kinematic {
 	private double orientation;
 	private Vector velocity;
 	private double rotation;
-	
-	public Kinematic() {
-		position = new Vector();
+
+	public Kinematic(double posx, double posy) {
+		position = new Vector(posx, posy);
 		orientation = 0;
-		velocity = new Vector();
+		velocity = new Vector(0, 0);
 		rotation = 0;
+
 	}
 
 	public Vector getPosition() {
@@ -45,6 +46,13 @@ public class Kinematic {
 	public void setRotation(double rotation) {
 		this.rotation = rotation;
 	}
-	
-	
+
+	public void update(SteeringOutput steering, long time) {
+		position = position.add(velocity.scale(time));
+		orientation += rotation * time;
+
+		velocity = velocity.add(steering.linear.scale(time));
+		rotation = steering.angular * time;
+	}
+
 }
