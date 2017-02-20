@@ -1,6 +1,6 @@
 package general;
 
-public class Kinematic extends Static{
+public class Kinematic extends Static {
 
 	public Vector velocity;
 	public double rotation;
@@ -12,12 +12,14 @@ public class Kinematic extends Static{
 	}
 
 	public void update(SteeringOutput steering, double time) {
-		position = position.add(velocity.scale(time));
-		orientation += rotation * time;
-		velocity = steering.velocity;
-		rotation = steering.rotation;
+		if (steering != null) {
+			position = position.add(velocity.scale(time));
+			orientation += rotation * time;
+			velocity = steering.velocity;
+			rotation = steering.rotation;
+		}
 	}
-	
+
 	public Static getStatic() {
 		return new Static(position, orientation);
 	}

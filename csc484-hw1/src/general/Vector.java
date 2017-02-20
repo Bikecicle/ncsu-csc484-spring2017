@@ -9,6 +9,11 @@ public class Vector {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Vector(double a) {
+		x = Math.cos(a);
+		y = Math.sin(a);
+	}
 
 	public double magnitude() {
 		return Math.sqrt(x * x + y * y);
@@ -26,8 +31,8 @@ public class Vector {
 		return new Vector(this.x - other.x, this.y - other.y);
 	}
 
-	public Vector scale(double a) {
-		return new Vector(x * a, y * a);
+	public Vector scale(double s) {
+		return new Vector(x * s, y * s);
 	}
 
 	public Vector normalize() {
