@@ -1,40 +1,48 @@
 package general;
 
-public class Arrive implements SteeringBehavior{
+public class Arrive {
 	
-	private Static character;
-	private Static target;
+	private Kinematic character;
+	private Kinematic target;
+	private double maxAcceleration;
 	private double maxSpeed;
-	private double radius;
-	private final double timeToTarget = 0.25;
+	private double targetRadius;
+	private double slowRadius;
+	private final double timeToTarget = 0.1;
 	
-	public Arrive(Static character, Static target, double maxSpeed, double radius) {
+	public Arrive(Kinematic character, Kinematic target, double maxAccleration, double maxSpeed, double targetRadius, double slowRadius) {
 		this.character = character;
 		this.target = target;
+		this.maxAcceleration = maxAccleration;
 		this.maxSpeed = maxSpeed;
-		this.radius = radius;
+		this.targetRadius = targetRadius;
+		this.slowRadius = slowRadius;
 	}
 
-	@Override
 	public SteeringOutput getSteering() {
 		SteeringOutput steering = new SteeringOutput();
-		steering.velocity = target.position.subtract(character.position);
-		if (steering.velocity.magnitude() < radius)
+		Vector direction = target.position.subtract(character.position);
+		double distance = direction.magnitude();
+		if (distance < targetRadius)
 			return null;
-		steering.velocity.scale(1.0 / timeToTarget);
-		if (steering.velocity.magnitude() > maxSpeed)
-			steering.velocity = steering.velocity.normalize().scale(maxSpeed);
-		if (steering.velocity.magnitude() > 0)
-			character.orientation = steering.velocity.direction();
-		steering.rotation = 0;
+		double targetSpeed = 0;
+		if (distance > slowRadius)
+			targetSpeed = maxSpeed;
+		else
+			targetSpeed = maxSpeed * distance / slowRadius;
+		Vector targetVelocity = direction.normalize().scale(targetSpeed);
+		steering.linear = targetVelocity.subtract(character.velocity).scale(1 / timeToTarget);
+		if (steering.linear.magnitude()  > maxAcceleration)
+			steering.linear = steering.linear.normalize().scale(maxAcceleration);
+		steering.angular = 0;
 		return steering;
 	}
 	
-	public Static getTarget() {
+	public Kinematic getTarget() {
 		return target;
 	}
 	
-	public void setTarget(Static target) {
+	public void setTarget(Kinematic target) {
 		this.target = target;
 	}
 

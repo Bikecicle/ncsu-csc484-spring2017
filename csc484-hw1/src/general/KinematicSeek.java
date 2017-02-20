@@ -1,20 +1,20 @@
 package general;
 
-public class Seek implements SteeringBehavior {
+public class KinematicSeek {
 
 	private Static character;
 	private Static target;
 	private double maxSpeed;
 
-	public Seek(Static character, Static target, double maxSpeed) {
+	public KinematicSeek(Static character, Static target, double maxSpeed) {
 		this.character = character;
 		this.target = target;
 		this.maxSpeed = maxSpeed;
 	}
 
 	@Override
-	public SteeringOutput getSteering() {
-		SteeringOutput steering = new SteeringOutput();
+	public KinematicSteeringOutput getSteering() {
+		KinematicSteeringOutput steering = new KinematicSteeringOutput();
 		// Set velocity toward target
 		steering.velocity = target.position.subtract(character.position).normalize().scale(maxSpeed);
 		// Set orientation in direction of velocity

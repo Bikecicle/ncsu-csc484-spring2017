@@ -12,8 +12,8 @@ public class Wander implements SteeringBehavior{
 	}
 
 	@Override
-	public SteeringOutput getSteering() {
-		SteeringOutput steering = new SteeringOutput();
+	public KinematicSteeringOutput getSteering() {
+		KinematicSteeringOutput steering = new KinematicSteeringOutput();
 		steering.velocity = new Vector(character.orientation);
 		steering.velocity = steering.velocity.scale(maxSpeed);
 		

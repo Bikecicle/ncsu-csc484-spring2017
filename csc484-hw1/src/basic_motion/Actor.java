@@ -1,17 +1,17 @@
 package basic_motion;
 
 import general.Kinematic;
-import general.Seek;
+import general.KinematicSeek;
 import general.Static;
 
 public class Actor {
 
 	private Kinematic kinematic;
-	private Seek seek;
+	private KinematicSeek seek;
 
 	public Actor(double posx, double posy, Static target) {
 		kinematic = new Kinematic(posx, posy);
-		seek = new Seek(kinematic, target, 200);
+		seek = new KinematicSeek(kinematic, target, 200);
 
 	}
 
@@ -24,7 +24,7 @@ public class Actor {
 	}
 
 	public void update(double time) {
-		kinematic.update(seek.getSteering(), time);
+		kinematic.kinematicUpdate(seek.getSteering(), time);
 	}
 
 	public void setTarget(Static target) {

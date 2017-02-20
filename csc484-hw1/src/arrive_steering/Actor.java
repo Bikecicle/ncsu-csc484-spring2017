@@ -2,7 +2,7 @@ package arrive_steering;
 
 import general.Arrive;
 import general.Kinematic;
-import general.Seek;
+import general.KinematicSeek;
 import general.Static;
 
 public class Actor {
@@ -21,7 +21,7 @@ public class Actor {
 	}
 
 	public void update(double time) {
-		kinematic.update(arrive.getSteering(), time);
+		kinematic.kinematicUpdate(arrive.getSteering(), time);
 	}
 
 	public Static getTarget() {
