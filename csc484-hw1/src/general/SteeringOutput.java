@@ -2,6 +2,6 @@ package general;
 
 public class SteeringOutput {
 
-	public Vector linear;
-	public double angular;
+	public Vector velocity;
+	public double rotation;
 }
