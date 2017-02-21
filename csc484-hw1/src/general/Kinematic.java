@@ -11,6 +11,12 @@ public class Kinematic extends Static {
 		rotation = 0;
 	}
 	
+	public Kinematic() {
+		super(0, 0);
+		velocity = new Vector(0, 0);
+		rotation = 0;
+	}
+	
 	public void update(SteeringOutput steering, double maxSpeed, double time) {
 		if (steering != null) {
 			position = position.add(velocity.scale(time));

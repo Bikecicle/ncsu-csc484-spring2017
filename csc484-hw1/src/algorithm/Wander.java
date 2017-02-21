@@ -1,10 +1,14 @@
-package general;
+package algorithm;
+
+import general.KinematicSteeringOutput;
+import general.Static;
+import general.Vector;
 
 public class Wander {
 	
-	private Static character;
-	private double maxSpeed;
-	private double maxRotation;
+	public Static character;
+	public double maxSpeed;
+	public double maxRotation;
 	
 
 	public Wander() {
@@ -20,7 +24,7 @@ public class Wander {
 		return null;
 	}
 	
-	private double randomBinomial() {
+	public double randomBinomial() {
 		return Math.random() - Math.random();
 	}
 	

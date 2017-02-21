@@ -1,17 +1,20 @@
-package general;
+package algorithm;
 
+import general.Kinematic;
+import general.SteeringOutput;
+import general.Vector;
 import general.util;
 
 public class Align {
 	
-	private Kinematic character;
-	private Kinematic target;
+	public Kinematic character;
+	public Kinematic target;
 	
-	private double maxAngularAcceleration;
-	private double maxRotation;
-	private double targetRadius;
-	private double slowRadius;
-	private double timeToTarget = 0.1;
+	public double maxAngularAcceleration;
+	public double maxRotation;
+	public double targetRadius;
+	public double slowRadius;
+	public double timeToTarget = 0.1;
 	
 	public Align(Kinematic character, Kinematic target, double maxAngularAcceleration, double maxRotation, double targetRadius, double slowRadius) {
 		this.character = character;
@@ -35,7 +38,12 @@ public class Align {
 		else
 			targetRotation = maxRotation * rotationMagnitude / slowRadius;
 		targetRotation *= rotation / rotationMagnitude;
-		
+		steering.angular = (targetRotation - character.rotation) / timeToTarget;
+		double angularAcceleration = Math.abs(steering.angular);
+		if (angularAcceleration > maxAngularAcceleration)
+			steering.angular = steering.angular / angularAcceleration * maxAngularAcceleration;
+		steering.linear = new Vector(0,0);
+		return steering;
 	}
 
 }

@@ -1,7 +1,7 @@
 package basic_motion;
 
+import algorithm.KinematicSeek;
 import general.Kinematic;
-import general.KinematicSeek;
 import general.Static;
 
 public class Actor {
@@ -20,7 +20,7 @@ public class Actor {
 	}
 
 	public Static getTarget() {
-		return seek.getTarget();
+		return seek.target;
 	}
 
 	public void update(double time) {
@@ -28,6 +28,6 @@ public class Actor {
 	}
 
 	public void setTarget(Static target) {
-		seek.setTarget(target);
+		seek.target = target;
 	}
 }

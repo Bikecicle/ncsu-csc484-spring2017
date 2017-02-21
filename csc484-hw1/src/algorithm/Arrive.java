@@ -1,14 +1,18 @@
-package general;
+package algorithm;
+
+import general.Kinematic;
+import general.SteeringOutput;
+import general.Vector;
 
 public class Arrive {
 	
-	private Kinematic character;
-	private Kinematic target;
-	private double maxAcceleration;
-	private double maxSpeed;
-	private double targetRadius;
-	private double slowRadius;
-	private final double timeToTarget = 0.1;
+	public Kinematic character;
+	public Kinematic target;
+	public double maxAcceleration;
+	public double maxSpeed;
+	public double targetRadius;
+	public double slowRadius;
+	public final double timeToTarget = 0.1;
 	
 	public Arrive(Kinematic character, Kinematic target, double maxAccleration, double maxSpeed, double targetRadius, double slowRadius) {
 		this.character = character;
@@ -39,13 +43,4 @@ public class Arrive {
 		steering.angular = 0;
 		return steering;
 	}
-	
-	public Kinematic getTarget() {
-		return target;
-	}
-	
-	public void setTarget(Kinematic target) {
-		this.target = target;
-	}
-
 }

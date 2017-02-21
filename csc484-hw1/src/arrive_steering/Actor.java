@@ -1,6 +1,6 @@
 package arrive_steering;
 
-import general.Arrive;
+import algorithm.Arrive;
 import general.Kinematic;
 import general.Static;
 
@@ -26,10 +26,10 @@ public class Actor {
 	}
 
 	public Static getTarget() {
-		return arrive.getTarget();
+		return arrive.target;
 	}
 
 	public void setTarget(Kinematic target) {
-		arrive.setTarget(target);
+		arrive.target = target;
 	}
 }
