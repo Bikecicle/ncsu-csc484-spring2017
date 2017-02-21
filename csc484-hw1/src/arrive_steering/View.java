@@ -1,7 +1,6 @@
 package arrive_steering;
 
 import general.Kinematic;
-import general.Static;
 import processing.core.PApplet;
 
 public class View extends PApplet {
@@ -17,7 +16,7 @@ public class View extends PApplet {
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
-		character = new Actor(20, 20, center, 400);
+		character = new Actor(center.position.x, center.position.y, center, 400);
 		PApplet.main("arrive_steering.View");
 	}
 

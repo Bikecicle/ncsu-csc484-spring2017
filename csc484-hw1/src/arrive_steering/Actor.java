@@ -2,7 +2,6 @@ package arrive_steering;
 
 import general.Arrive;
 import general.Kinematic;
-import general.KinematicSeek;
 import general.Static;
 
 public class Actor {
