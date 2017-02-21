@@ -1,5 +1,7 @@
 package general;
 
+import general.util;
+
 public class Align {
 	
 	private Kinematic character;
@@ -23,6 +25,16 @@ public class Align {
 	public SteeringOutput getSteering() {
 		SteeringOutput steering = new SteeringOutput();
 		double rotation = target.orientation - character.orientation;
+		rotation = util.mapToRange(rotation);
+		double rotationMagnitude = Math.abs(rotation);
+		if (rotationMagnitude < targetRadius)
+			return null;
+		double targetRotation = 0;
+		if (rotationMagnitude < slowRadius)
+			targetRotation = maxRotation;
+		else
+			targetRotation = maxRotation * rotationMagnitude / slowRadius;
+		targetRotation *= rotation / rotationMagnitude;
 		
 	}
 
