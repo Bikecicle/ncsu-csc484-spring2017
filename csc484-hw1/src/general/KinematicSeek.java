@@ -12,7 +12,6 @@ public class KinematicSeek {
 		this.maxSpeed = maxSpeed;
 	}
 
-	@Override
 	public KinematicSteeringOutput getSteering() {
 		KinematicSteeringOutput steering = new KinematicSteeringOutput();
 		// Set velocity toward target

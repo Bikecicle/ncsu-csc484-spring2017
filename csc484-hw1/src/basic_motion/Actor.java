@@ -24,7 +24,7 @@ public class Actor {
 	}
 
 	public void update(double time) {
-		kinematic.kinematicUpdate(seek.getSteering(), time);
+		kinematic.update(seek.getSteering(), time);
 	}
 
 	public void setTarget(Static target) {

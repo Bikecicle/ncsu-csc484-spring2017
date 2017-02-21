@@ -1,5 +1,6 @@
 package arrive_steering;
 
+import general.Kinematic;
 import general.Static;
 import processing.core.PApplet;
 
@@ -10,13 +11,13 @@ public class View extends PApplet {
 	public static final int characterRadius = 10;
 
 	private static Actor character;
-	private static Static center;
+	private static Kinematic center;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
-		center = new Static(viewWidth / 2, viewHeight / 2);
-		character = new Actor(center.position.x, center.position.y, center);
+		center = new Kinematic(viewWidth / 2, viewHeight / 2);
+		character = new Actor(20, 20, center, 400);
 		PApplet.main("arrive_steering.View");
 	}
 
@@ -40,7 +41,7 @@ public class View extends PApplet {
 	}
 	
 	public void mousePressed() {
-		character.setTarget(new Static(mouseX, viewHeight - mouseY));
+		character.setTarget(new Kinematic(mouseX, viewHeight - mouseY));
 	}
 
 	private void renderActor(Actor agent) {

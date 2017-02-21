@@ -34,6 +34,8 @@ public class Arrive {
 		steering.linear = targetVelocity.subtract(character.velocity).scale(1 / timeToTarget);
 		if (steering.linear.magnitude()  > maxAcceleration)
 			steering.linear = steering.linear.normalize().scale(maxAcceleration);
+		if (character.velocity.magnitude() > 0)
+			character.orientation = character.velocity.direction();
 		steering.angular = 0;
 		return steering;
 	}

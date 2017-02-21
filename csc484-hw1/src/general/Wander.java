@@ -1,6 +1,6 @@
 package general;
 
-public class Wander implements SteeringBehavior{
+public class Wander {
 	
 	private Static character;
 	private double maxSpeed;
@@ -11,7 +11,6 @@ public class Wander implements SteeringBehavior{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public KinematicSteeringOutput getSteering() {
 		KinematicSteeringOutput steering = new KinematicSteeringOutput();
 		steering.velocity = new Vector(character.orientation);
