@@ -17,7 +17,7 @@ public class Face extends Align {
 	@Override
 	public SteeringOutput getSteering() {
 		Vector direction = faceTarget.position.subtract(character.position);
-		target.orientation = Math.atan2(direction.y, -direction.x);
+		target.orientation = Math.atan2(direction.y, direction.x);
 		return super.getSteering();
 	}
 }

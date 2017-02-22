@@ -1,24 +1,27 @@
-package wander_steering;
+package flocking_behavior;
 
-import wander_steering.Actor;
-import general.Kinematic;
 import processing.core.PApplet;
 
 public class View extends PApplet {
 
 	public static final int viewWidth = 800;
 	public static final int viewHeight = 600;
-	public static final int characterRadius = 10;
+	public static final int characterRadius = 4;
+	public static final int boidCount = 200;
 
-	private static Actor character;
-	private static Kinematic center;
+	private static Actor[] boids;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
-		center = new Kinematic(viewWidth / 2, viewHeight / 2);
-		character = new Actor(center.position.x, center.position.y);
-		PApplet.main("wander_steering.View");
+		boids = new Actor[boidCount];
+		for (int i = 0; i < boidCount; i++) {
+			boids[i] = new Actor(Math.random() * 800, Math.random() * 600, boids);
+		}
+		for (Actor boid : boids) {
+			boid.selectTargets();
+		}
+		PApplet.main("flocking_behavior.View");
 	}
 
 	public void settings() {
@@ -36,8 +39,10 @@ public class View extends PApplet {
 		double dt = (timestamp - timestampPrev) / 1000000000.0;
 		background(120);
 
-		character.update(dt);
-		renderActor(character);
+		for (Actor boid : boids) {
+			boid.update(dt);
+			renderActor(boid);
+		}
 	}
 
 	private void renderActor(Actor agent) {

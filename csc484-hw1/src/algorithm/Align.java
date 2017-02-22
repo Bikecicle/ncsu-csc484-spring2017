@@ -14,7 +14,7 @@ public class Align {
 	public double maxRotation;
 	public double targetRadius;
 	public double slowRadius;
-	public double timeToTarget = 0.1;
+	public double timeToTarget = 0.005;
 	
 	public Align(Kinematic character, Kinematic target, double maxAngularAcceleration, double maxRotation, double targetRadius, double slowRadius) {
 		this.character = character;
@@ -36,7 +36,7 @@ public class Align {
 			return steering;
 		}
 		double targetRotation = 0;
-		if (rotationMagnitude < slowRadius)
+		if (rotationMagnitude > slowRadius)
 			targetRotation = maxRotation;
 		else
 			targetRotation = maxRotation * rotationMagnitude / slowRadius;

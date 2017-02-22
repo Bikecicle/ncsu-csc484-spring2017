@@ -3,7 +3,7 @@ package algorithm;
 import general.Kinematic;
 import general.SteeringOutput;
 
-public class LookWhereYouAreGoing extends Align{
+public class LookWhereYouAreGoing extends Align implements SteeringBehavior{
 
 	public LookWhereYouAreGoing(Kinematic character, double maxAngularAcceleration,
 			double maxRotation, double targetRadius, double slowRadius) {
@@ -12,8 +12,8 @@ public class LookWhereYouAreGoing extends Align{
 	
 	public SteeringOutput getSteering() {
 		if (character.velocity.magnitude() == 0)
-			return null;
-		target.orientation = Math.atan2(character.velocity.y, -character.velocity.x);
+			return new SteeringOutput();
+		target.orientation = Math.atan2(character.velocity.y, character.velocity.x);
 		return super.getSteering();
 	}
 }

@@ -3,7 +3,7 @@ package algorithm;
 import general.Kinematic;
 import general.SteeringOutput;
 
-public class VelocityMatch {
+public class VelocityMatch implements SteeringBehavior {
 
 	public Kinematic character;
 	public Kinematic target;
@@ -19,7 +19,7 @@ public class VelocityMatch {
 	public SteeringOutput getSteering() {
 		SteeringOutput steering = new SteeringOutput();
 		steering.linear = target.velocity.subtract(character.velocity);
-		steering.linear = steering.linear.scale(1 / timeToTarget);
+		steering.linear = steering.linear.scale(1.0 / timeToTarget);
 		if (steering.linear.magnitude() > maxAcceleration)
 			steering.linear = steering.linear.normalize().scale(maxAcceleration);
 		steering.angular = 0;

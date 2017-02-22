@@ -1,13 +1,11 @@
 package algorithm;
 
 import general.Kinematic;
-import general.KinematicSteeringOutput;
-import general.Static;
 import general.SteeringOutput;
 import general.Util;
 import general.Vector;
 
-public class Wander extends Face {
+public class Wander extends Face implements SteeringBehavior {
 
 	public double wanderOffset;
 	public double wanderRadius;
@@ -26,12 +24,12 @@ public class Wander extends Face {
 		this.maxAcceleration = maxAcceleration;
 	}
 	
+	@Override
 	public SteeringOutput getSteering() {
 		wanderOrientation += Util.randomBinomial() * wanderRate;
 		double targetOrientation = wanderOrientation + character.orientation;
-		target.position = character.position.add(new Vector(character.orientation).scale(wanderOffset));
-		target.position = target.position.add(new Vector(targetOrientation).scale(wanderRadius));
-		System.out.println(targetOrientation / Math.PI);
+		faceTarget.position = character.position.add(new Vector(character.orientation).scale(wanderOffset));
+		faceTarget.position = faceTarget.position.add(new Vector(targetOrientation).scale(wanderRadius));
 		SteeringOutput steering = super.getSteering();
 		steering.linear = new Vector(character.orientation).scale(maxAcceleration);
 		return steering;

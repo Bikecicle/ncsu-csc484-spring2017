@@ -7,13 +7,12 @@ public class Actor {
 
 	private Kinematic kinematic;
 	private Wander wander;
-	private double maxSpeed;
+	private double maxSpeed = 100;
 
-	public Actor(double posx, double posy, Kinematic target, double maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public Actor(double posx, double posy) {
 		kinematic = new Kinematic(posx, posy);
-		wander = new Wander(kinematic, Math.PI * 2, Math.PI / 8, Math.PI / 32, Math.PI / 8, 550, 500, Math.PI / 16, 0,
-				400);
+		wander = new Wander(kinematic, Math.PI * 2, Math.PI, Math.PI / 32, Math.PI / 8, 200, 100, Math.PI / 2, 0,
+				800);
 	}
 
 	public Kinematic getKinematic() {

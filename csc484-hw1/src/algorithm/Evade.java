@@ -4,7 +4,7 @@ import general.Kinematic;
 import general.SteeringOutput;
 import general.Vector;
 
-public class Evade extends Flee {
+public class Evade extends Flee implements SteeringBehavior {
 	
 	public double maxPrediction;
 	public Kinematic evadeTarget;
@@ -24,7 +24,7 @@ public class Evade extends Flee {
 			prediction = maxPrediction;
 		else
 			prediction = distance / speed;
-		target.position = target.position.add(target.velocity.scale(prediction));
+		target.position = target.position.add(evadeTarget.velocity.scale(prediction));
 		return super.getSteering();
 	}
 

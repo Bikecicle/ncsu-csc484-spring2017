@@ -1,6 +1,8 @@
 package arrive_steering;
 
 import algorithm.Arrive;
+import algorithm.BlendedSteering;
+import algorithm.LookWhereYouAreGoing;
 import general.Kinematic;
 import general.Static;
 
@@ -13,8 +15,7 @@ public class Actor {
 	public Actor(double posx, double posy, Kinematic target, double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 		kinematic = new Kinematic(posx, posy);
-		arrive = new Arrive(kinematic, target, 800, maxSpeed, 1, 200);
-
+		arrive = new Arrive(kinematic, target, 800, maxSpeed, 2, 200);
 	}
 
 	public Kinematic getKinematic() {
@@ -23,6 +24,8 @@ public class Actor {
 
 	public void update(double time) {
 		kinematic.update(arrive.getSteering(), maxSpeed, time);
+		if (kinematic.velocity.magnitude() > 0)
+			kinematic.orientation = kinematic.velocity.direction();
 	}
 
 	public Static getTarget() {

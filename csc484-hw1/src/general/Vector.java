@@ -43,6 +43,14 @@ public class Vector {
 	public boolean isCloseTo(Vector other, double radius) {
 		return Math.abs(this.x - other.x) < radius && Math.abs(this.y - other.y) < radius;
 	}
+	
+	public double distance(Vector other) {
+		return other.subtract(this).magnitude();
+	}
+	
+	public double innerProduct(Vector other) {
+		return this.x * other.x + this.y * other.y;
+	}
 
 	public String toString() {
 		return "(" + x + ", " + y + ")";
