@@ -25,6 +25,16 @@ public class Kinematic extends Static {
 			rotation += steering.angular * time;
 			if (velocity.magnitude() > maxSpeed)
 				velocity = velocity.normalize().scale(maxSpeed);
+			
+			if (position.x > 810)
+				position.x -= 820;
+			else if (position.x < -10)
+				position.x += 820;
+			
+			if (position.y > 610)
+				position.y -= 620;
+			else if (position.y < -10)
+				position.y += 620;
 		}
 	}
 

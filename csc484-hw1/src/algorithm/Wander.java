@@ -1,31 +1,39 @@
 package algorithm;
 
+import general.Kinematic;
 import general.KinematicSteeringOutput;
 import general.Static;
+import general.SteeringOutput;
+import general.Util;
 import general.Vector;
 
-public class Wander {
-	
-	public Static character;
-	public double maxSpeed;
-	public double maxRotation;
-	
+public class Wander extends Face {
 
-	public Wander() {
-		// TODO Auto-generated constructor stub
-	}
+	public double wanderOffset;
+	public double wanderRadius;
+	public double wanderRate;
+	public double wanderOrientation;
+	public double maxAcceleration;
 
-	public KinematicSteeringOutput getSteering() {
-		KinematicSteeringOutput steering = new KinematicSteeringOutput();
-		steering.velocity = new Vector(character.orientation);
-		steering.velocity = steering.velocity.scale(maxSpeed);
-		
-		
-		return null;
+	public Wander(Kinematic character, double maxAngularAcceleration, double maxRotation, double targetRadius,
+			double slowRadius, double wanderOffset, double wanderRadius, double wanderRate, double wanderOrientation,
+			double maxAcceleration) {
+		super(character, new Kinematic(), maxAngularAcceleration, maxRotation, targetRadius, slowRadius);
+		this.wanderOffset = wanderOffset;
+		this.wanderRadius = wanderRadius;
+		this.wanderRate = wanderRate;
+		this.wanderOrientation = wanderOrientation;
+		this.maxAcceleration = maxAcceleration;
 	}
 	
-	public double randomBinomial() {
-		return Math.random() - Math.random();
+	public SteeringOutput getSteering() {
+		wanderOrientation += Util.randomBinomial() * wanderRate;
+		double targetOrientation = wanderOrientation + character.orientation;
+		target.position = character.position.add(new Vector(character.orientation).scale(wanderOffset));
+		target.position = target.position.add(new Vector(targetOrientation).scale(wanderRadius));
+		System.out.println(targetOrientation / Math.PI);
+		SteeringOutput steering = super.getSteering();
+		steering.linear = new Vector(character.orientation).scale(maxAcceleration);
+		return steering;
 	}
-	
 }

@@ -3,7 +3,7 @@ package algorithm;
 import general.Kinematic;
 import general.SteeringOutput;
 import general.Vector;
-import general.util;
+import general.Util;
 
 public class Align {
 	
@@ -28,10 +28,13 @@ public class Align {
 	public SteeringOutput getSteering() {
 		SteeringOutput steering = new SteeringOutput();
 		double rotation = target.orientation - character.orientation;
-		rotation = util.mapToRange(rotation);
+		rotation = Util.mapToRange(rotation);
 		double rotationMagnitude = Math.abs(rotation);
-		if (rotationMagnitude < targetRadius)
-			return null;
+		if (rotationMagnitude < targetRadius) {
+			steering.linear = new Vector(0,0);
+			steering.angular = 0;
+			return steering;
+		}
 		double targetRotation = 0;
 		if (rotationMagnitude < slowRadius)
 			targetRotation = maxRotation;

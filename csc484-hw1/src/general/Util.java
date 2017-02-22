@@ -1,6 +1,6 @@
 package general;
 
-public class util {
+public class Util {
 	
 	public static double mapToRange(double deltaOrientation) {
 		double r = deltaOrientation % (2 * Math.PI);
@@ -12,6 +12,10 @@ public class util {
 			else
 				return r + 2 * Math.PI;
 		}
+	}
+	
+	public static double randomBinomial() {
+		return Math.random() - Math.random();
 	}
 
 }
