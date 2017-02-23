@@ -1,6 +1,6 @@
 package wander_steering;
 
-import wander_steering.Actor;
+import wander_steering.WanderActor;
 import general.Breadcrumbs;
 import general.Kinematic;
 import general.Vector;
@@ -12,7 +12,7 @@ public class View extends PApplet {
 	public static final int viewHeight = 600;
 	public static final int characterRadius = 10;
 
-	private static Actor character;
+	private static WanderActor character;
 	private static Kinematic center;
 	private static Breadcrumbs breadcrumbs;
 
@@ -20,7 +20,7 @@ public class View extends PApplet {
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
-		character = new Actor(center.position.x, center.position.y);
+		character = new WanderActor(center.position.x, center.position.y);
 		breadcrumbs = new Breadcrumbs(100, 0.1);
 		PApplet.main("wander_steering.View");
 	}
@@ -46,7 +46,7 @@ public class View extends PApplet {
 		renderActor(character);
 	}
 
-	private void renderActor(Actor agent) {
+	private void renderActor(WanderActor agent) {
 		float x = (float) agent.getKinematic().position.x;
 		float y = (float) (viewHeight - agent.getKinematic().position.y);
 		float a = (float) agent.getKinematic().orientation;

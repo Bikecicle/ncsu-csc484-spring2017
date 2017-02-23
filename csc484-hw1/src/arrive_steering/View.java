@@ -11,7 +11,7 @@ public class View extends PApplet {
 	public static final int viewHeight = 600;
 	public static final int characterRadius = 10;
 
-	private static Actor character;
+	private static ArriveActor character;
 	private static Kinematic center;
 	private static Breadcrumbs breadcrumbs;
 
@@ -19,7 +19,7 @@ public class View extends PApplet {
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
-		character = new Actor(center.position.x, center.position.y, center, 400);
+		character = new ArriveActor(center.position.x, center.position.y, center, 400);
 		breadcrumbs = new Breadcrumbs(30, 0.1);
 		PApplet.main("arrive_steering.View");
 	}
@@ -49,7 +49,7 @@ public class View extends PApplet {
 		character.setTarget(new Kinematic(mouseX, viewHeight - mouseY));
 	}
 
-	private void renderActor(Actor agent) {
+	private void renderActor(ArriveActor agent) {
 		float x = (float) agent.getKinematic().position.x;
 		float y = (float) (viewHeight - agent.getKinematic().position.y);
 		float a = (float) agent.getKinematic().orientation;

@@ -59,4 +59,8 @@ public class Vector {
 	public boolean equals(Vector other) {
 		return this.x == other.x && this.y == other.y;
 	}
+	
+	public Vector copy() {
+		return new Vector(x, y);
+	}
 }

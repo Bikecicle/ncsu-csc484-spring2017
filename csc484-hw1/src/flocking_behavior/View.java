@@ -1,6 +1,8 @@
 package flocking_behavior;
 
+import general.Actor;
 import processing.core.PApplet;
+import wander_steering.WanderActor;
 
 public class View extends PApplet {
 
@@ -8,18 +10,24 @@ public class View extends PApplet {
 	public static final int viewHeight = 600;
 	public static final int characterRadius = 4;
 	public static final int boidCount = 200;
+	public static final int sharkCount = 10;
 
 	private static Actor[] boids;
+	private static Actor[] sharks;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
 		boids = new Actor[boidCount];
+		sharks = new Actor[sharkCount];
 		for (int i = 0; i < boidCount; i++) {
-			boids[i] = new Actor(Math.random() * 800, Math.random() * 600, boids);
+			boids[i] = new BoidActor(Math.random() * 800, Math.random() * 600, boids, sharks);
 		}
-		for (Actor boid : boids) {
-			boid.selectTargets();
+		for (int i = 0; i < sharkCount; i++) {
+			sharks[i] = new WanderActor(Math.random() * 800, Math.random() * 600);
+		}
+		for (int i = 0; i < boidCount; i++) {
+			((BoidActor) boids[i]).selectTargets();
 		}
 		PApplet.main("flocking_behavior.View");
 	}
@@ -43,11 +51,15 @@ public class View extends PApplet {
 			boid.update(dt);
 			renderActor(boid);
 		}
+		for (Actor shark : sharks) {
+			shark.update(dt);
+			renderActor(shark);
+		}
 	}
-	
+
 	public void mousePressed() {
-		for ( Actor boid : boids) {
-			boid.scramble();
+		for (int i = 0; i < boidCount; i++) {
+			((BoidActor) boids[i]).scramble();
 		}
 	}
 

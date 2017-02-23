@@ -1,16 +1,17 @@
 package arrive_steering;
 
 import algorithm.Arrive;
+import general.Actor;
 import general.Kinematic;
 import general.Static;
 
-public class Actor {
+public class ArriveActor implements Actor {
 
 	private Kinematic kinematic;
 	private Arrive arrive;
 	private double maxSpeed;
 
-	public Actor(double posx, double posy, Kinematic target, double maxSpeed) {
+	public ArriveActor(double posx, double posy, Kinematic target, double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 		kinematic = new Kinematic(posx, posy);
 		arrive = new Arrive(kinematic, target, 800, maxSpeed, 2, 200);
