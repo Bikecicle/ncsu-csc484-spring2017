@@ -5,11 +5,9 @@ import java.util.List;
 
 import algorithm.Arrive;
 import algorithm.BlendedSteering;
-import algorithm.CollisionAvoidance;
 import algorithm.LookWhereYouAreGoing;
 import algorithm.Separation;
 import algorithm.VelocityMatch;
-import algorithm.Wander;
 import general.Actor;
 import general.Kinematic;
 import general.Vector;
@@ -45,16 +43,16 @@ public class BoidActor implements Actor {
 		neighborhoodCM = new Kinematic();
 
 		blendedSteering = new BlendedSteering(maxAcceleration, maxRotation);
-		blendedSteering.addBehavior( new Separation(kinematic, sharkTargets, 100, 8000000, maxAcceleration), 1);
+		blendedSteering.addBehavior(new Separation(kinematic, sharkTargets, 100, 8000000, maxAcceleration), 1);
 		blendedSteering.addBehavior(new Separation(kinematic, boidTargets, 30, 80000, maxAcceleration), 1);
 		blendedSteering.addBehavior(new VelocityMatch(kinematic, neighborhoodCM, maxAcceleration), 1);
 		blendedSteering.addBehavior(
 				new Arrive(kinematic, neighborhoodCM, maxAcceleration, maxSpeed, targetRadius, slowRadius), 1);
 		blendedSteering.addBehavior(
 				new LookWhereYouAreGoing(kinematic, maxRotation, maxRotation / 8, Math.PI / 16, Math.PI), 1);
-		blendedSteering.addBehavior(
-				new Wander(kinematic, Math.PI * 2, Math.PI, Math.PI / 32, Math.PI / 8, 200, 100, Math.PI / 2, 0, 400),
-				1);
+		//blendedSteering.addBehavior(
+		//		new Wander(kinematic, Math.PI * 2, Math.PI, Math.PI / 32, Math.PI / 8, 200, 100, Math.PI / 2, 0, 400),
+		//		1);
 
 	}
 
