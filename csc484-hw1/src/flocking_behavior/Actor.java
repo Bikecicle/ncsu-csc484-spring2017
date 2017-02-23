@@ -8,9 +8,7 @@ import algorithm.BlendedSteering;
 import algorithm.CollisionAvoidance;
 import algorithm.LookWhereYouAreGoing;
 import algorithm.VelocityMatch;
-import algorithm.Wander;
 import general.Kinematic;
-import general.Util;
 import general.Vector;
 
 public class Actor {

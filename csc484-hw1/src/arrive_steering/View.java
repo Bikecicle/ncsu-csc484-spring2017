@@ -1,6 +1,8 @@
 package arrive_steering;
 
+import general.Breadcrumbs;
 import general.Kinematic;
+import general.Vector;
 import processing.core.PApplet;
 
 public class View extends PApplet {
@@ -11,12 +13,14 @@ public class View extends PApplet {
 
 	private static Actor character;
 	private static Kinematic center;
+	private static Breadcrumbs breadcrumbs;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
 		character = new Actor(center.position.x, center.position.y, center, 400);
+		breadcrumbs = new Breadcrumbs(30, 0.1);
 		PApplet.main("arrive_steering.View");
 	}
 
@@ -36,6 +40,8 @@ public class View extends PApplet {
 		background(120);
 
 		character.update(dt);
+		breadcrumbs.add(character.getKinematic().position, timestamp);
+		renderBreadcrumbs(breadcrumbs);
 		renderActor(character);
 	}
 	
@@ -54,7 +60,13 @@ public class View extends PApplet {
 				(float) (y + 2 * Math.sin(a) * characterRadius * 0.75));
 		fill(255);
 		ellipse(x, y, 2.0f * characterRadius, 2.0f * characterRadius);
-
+	}
+	
+	private void renderBreadcrumbs(Breadcrumbs breadcrumbs) {
+		fill(0);
+		for (Vector crumb : breadcrumbs) {
+			ellipse((float) crumb.x, (float) (viewHeight - crumb.y), 0.3f * characterRadius, 0.3f * characterRadius);
+		}
 	}
 
 }

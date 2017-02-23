@@ -1,6 +1,8 @@
 package basic_motion;
 
+import general.Breadcrumbs;
 import general.Static;
+import general.Vector;
 import processing.core.PApplet;
 
 public class View extends PApplet {
@@ -10,20 +12,22 @@ public class View extends PApplet {
 	public static final int characterRadius = 10;
 
 	private static Actor character;
+	private static Breadcrumbs breadcrumbs;
 
 	private static long timestamp;
-	
+
 	private static Static t1;
 	private static Static t2;
 	private static Static t3;
 	private static Static t4;
-	
+
 	public static void main(String[] args) {
 		t1 = new Static(780, 20);
 		t2 = new Static(780, 580);
 		t3 = new Static(20, 580);
 		t4 = new Static(20, 20);
 		character = new Actor(20, 20, t1);
+		breadcrumbs = new Breadcrumbs(30, 0.1);
 		PApplet.main("basic_motion.View");
 	}
 
@@ -41,7 +45,7 @@ public class View extends PApplet {
 		timestamp = System.nanoTime();
 		double dt = (timestamp - timestampPrev) / 1000000000.0;
 		background(120);
-		
+
 		if (character.getKinematic().position.isCloseTo(t1.position, 1) && character.getTarget().equals(t1)) {
 			character.setTarget(t2);
 		} else if (character.getKinematic().position.isCloseTo(t2.position, 1) && character.getTarget().equals(t2)) {
@@ -51,8 +55,10 @@ public class View extends PApplet {
 		} else if (character.getKinematic().position.isCloseTo(t4.position, 1) && character.getTarget().equals(t4)) {
 			character.setTarget(t1);
 		}
-		
+
 		character.update(dt);
+		breadcrumbs.add(character.getKinematic().position, timestamp);
+		renderBreadcrumbs(breadcrumbs);
 		renderActor(character);
 	}
 
@@ -67,7 +73,13 @@ public class View extends PApplet {
 				(float) (y + 2 * Math.sin(a) * characterRadius * 0.75));
 		fill(255);
 		ellipse(x, y, 2.0f * characterRadius, 2.0f * characterRadius);
+	}
 
+	private void renderBreadcrumbs(Breadcrumbs breadcrumbs) {
+		fill(0);
+		for (Vector crumb : breadcrumbs) {
+			ellipse((float) crumb.x, (float) (viewHeight - crumb.y), 0.3f * characterRadius, 0.3f * characterRadius);
+		}
 	}
 
 }
