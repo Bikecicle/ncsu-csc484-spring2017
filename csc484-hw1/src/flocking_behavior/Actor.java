@@ -5,9 +5,10 @@ import java.util.List;
 
 import algorithm.Arrive;
 import algorithm.BlendedSteering;
-import algorithm.CollisionAvoidance;
 import algorithm.LookWhereYouAreGoing;
+import algorithm.Separation;
 import algorithm.VelocityMatch;
+import algorithm.Wander;
 import general.Kinematic;
 import general.Vector;
 
@@ -38,15 +39,12 @@ public class Actor {
 		neighborhoodCM = new Kinematic();
 
 		blendedSteering = new BlendedSteering(maxAcceleration, maxRotation);
-		blendedSteering.addBehavior(new CollisionAvoidance(kinematic, targets, maxAcceleration), 1);
-		blendedSteering.addBehavior(new VelocityMatch(kinematic, neighborhoodCM, maxAcceleration), 0.4);
-		blendedSteering.addBehavior(
-				new Arrive(kinematic, neighborhoodCM, maxAcceleration, maxSpeed, targetRadius, slowRadius), 0.01);
-		blendedSteering.addBehavior(
-				new LookWhereYouAreGoing(kinematic, maxRotation, maxRotation / 8, Math.PI / 16, Math.PI), 1);
-		//blendedSteering.addBehavior(
-		//		new Wander(kinematic, Math.PI * 2, Math.PI, Math.PI / 32, Math.PI / 8, 200, 100, Math.PI / 2, 0, 800),
-		//		1);
+		//blendedSteering.addBehavior(new CollisionAvoidance(kinematic, targets, maxAcceleration), 1);
+		blendedSteering.addBehavior(new Separation(kinematic, targets, 30, 80000 ,maxAcceleration), 1);
+		blendedSteering.addBehavior(new VelocityMatch(kinematic, neighborhoodCM, maxAcceleration), 1);
+		blendedSteering.addBehavior(new Arrive(kinematic, neighborhoodCM, maxAcceleration, maxSpeed, targetRadius, slowRadius), 1);
+		blendedSteering.addBehavior(new LookWhereYouAreGoing(kinematic, maxRotation, maxRotation / 8, Math.PI / 16, Math.PI), 1);
+		blendedSteering.addBehavior(new Wander(kinematic, Math.PI * 2, Math.PI, Math.PI / 32, Math.PI / 8, 200, 100, Math.PI / 2, 0, 400), 1);
 
 	}
 
@@ -85,5 +83,9 @@ public class Actor {
 			neighborhoodCM.velocity = kinematic.velocity;
 		}
 		kinematic.update(blendedSteering.getSteering(), maxSpeed, time);
+	}
+	
+	public void scramble() {
+		kinematic.velocity = new Vector(Math.random() * 2 * Math.PI - Math.PI).scale(maxSpeed);
 	}
 }

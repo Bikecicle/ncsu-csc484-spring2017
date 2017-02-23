@@ -44,6 +44,12 @@ public class View extends PApplet {
 			renderActor(boid);
 		}
 	}
+	
+	public void mousePressed() {
+		for ( Actor boid : boids) {
+			boid.scramble();
+		}
+	}
 
 	private void renderActor(Actor agent) {
 		float x = (float) agent.getKinematic().position.x;

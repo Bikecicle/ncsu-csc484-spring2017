@@ -1,8 +1,6 @@
 package arrive_steering;
 
 import algorithm.Arrive;
-import algorithm.BlendedSteering;
-import algorithm.LookWhereYouAreGoing;
 import general.Kinematic;
 import general.Static;
 
