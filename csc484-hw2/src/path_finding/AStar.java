@@ -1,6 +1,5 @@
 package path_finding;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class AStar {
 	public long time;
 	public double length;
 	
-	public List<Edge> path(AdjacencyList graph, Node start, Node end, Heuristic heuristic) {
+	public Path path(AdjacencyList graph, Node start, Node end, Heuristic heuristic) {
 		NodeRecord startRecord = new NodeRecord(start);
 		startRecord.estimatedTotalCost = heuristic.estimate(start, end);
 		PathfindingList open = new PathfindingList();
@@ -71,7 +70,7 @@ public class AStar {
 			return null;
 		
 		length = current.costSoFar;
-		List<Edge> path = new ArrayList<Edge>();
+		Path path = new Path();
 		while (current.node != start) {
 			path.add(0, current.connection);
 			current = closed.find(current.connection.origin);

@@ -1,6 +1,5 @@
 package path_finding;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import graph.AdjacencyList;
@@ -13,7 +12,7 @@ public class Dijkstra {
 	public long time;
 	public double length;
 
-	public List<Edge> path(AdjacencyList graph, Node start, Node end) {
+	public Path path(AdjacencyList graph, Node start, Node end) {
 		NodeRecord startRecord = new NodeRecord(start);
 		PathfindingList open = new PathfindingList();
 		open.add(startRecord);
@@ -59,7 +58,7 @@ public class Dijkstra {
 		
 		if (current.node != end)
 			return null;
-		List<Edge> path = new ArrayList<Edge>();
+		Path path = new Path();
 		length = current.costSoFar;
 		while (current.node != start) {
 			path.add(0, current.connection);

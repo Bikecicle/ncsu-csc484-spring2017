@@ -30,7 +30,8 @@ public class AdjacencyList {
 		Node origin = findNode(originId);
 		Node destination = findNode(destinationId);
 		if (!hasEdge(originId, destinationId)) {
-			double weight = Math.sqrt(Math.pow(destination.x - origin.x, 2) + Math.pow(destination.y - origin.y, 2));
+			double weight = Math.sqrt(Math.pow(destination.position.x - origin.position.x, 2)
+					+ Math.pow(destination.position.y - origin.position.y, 2));
 			edgeList.add(new Edge(origin, destination, weight));
 			edgeList.add(new Edge(destination, origin, weight));
 		}
@@ -58,7 +59,7 @@ public class AdjacencyList {
 			FileWriter out = new FileWriter(file);
 			out.write(nodeList.size() + " " + edgeList.size() + "\n");
 			for (Node node : nodeList) {
-				out.write(node.id + " " + node.x + " " + node.y + "\n");
+				out.write(node.id + " " + node.position.x + " " + node.position.y + "\n");
 			}
 			for (Edge edge : edgeList) {
 				out.write(edge.origin.id + " " + edge.destination.id + " " + edge.weight + "\n");
