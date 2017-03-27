@@ -19,4 +19,7 @@ public class Edge {
 		return destination;
 	}
 
+	public String toString() {
+		return origin.id + " -> " + destination.id + " : (" + weight + ")";
+	}
 }

@@ -4,6 +4,6 @@ import graph.Node;
 
 public interface Heuristic {
 
-	public double estimate(Node node);
+	public double estimate(Node node, Node target);
 
 }

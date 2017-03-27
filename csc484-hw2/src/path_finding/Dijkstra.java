@@ -1,22 +1,34 @@
 package path_finding;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
 
 public class Dijkstra {
+	
+	public int visited;
+	public long time;
+	public double length;
 
-	public static List<Edge> path(AdjacencyList graph, Node start, Node end) {
+	public List<Edge> path(AdjacencyList graph, Node start, Node end) {
 		NodeRecord startRecord = new NodeRecord(start);
 		PathfindingList open = new PathfindingList();
 		open.add(startRecord);
 		PathfindingList closed = new PathfindingList();
+		visited = 0;
+		time = System.nanoTime();
 
 		NodeRecord current = null;
 		while (!open.isEmpty()) {
-			open.sort(null);
+			open.sort(new Comparator<NodeRecord>() {
+				@Override
+				public int compare(NodeRecord o1, NodeRecord o2) {
+					return (int) Math.signum(o1.costSoFar - o2.costSoFar);
+				}
+			});
 			current = open.get(0);
 			if (current.node == end)
 				break;
@@ -41,12 +53,14 @@ public class Dijkstra {
 			}
 			open.remove(current);
 			closed.add(current);
+			visited++;
 		}
+		time = System.nanoTime() - time;
 		
 		if (current.node != end)
 			return null;
-		
 		List<Edge> path = new ArrayList<Edge>();
+		length = current.costSoFar;
 		while (current.node != start) {
 			path.add(0, current.connection);
 			current = closed.find(current.connection.origin);
