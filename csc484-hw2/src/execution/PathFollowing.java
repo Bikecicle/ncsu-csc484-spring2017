@@ -9,6 +9,7 @@ import graph.Edge;
 import graph.Node;
 import path_finding.AStar;
 import path_finding.Euclidian;
+import path_finding.Manhattan;
 import path_finding.Path;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -27,17 +28,15 @@ public class PathFollowing extends PApplet {
 	public static AdjacencyList tileGraph;
 
 	public static AStar aStar;
-	public static Euclidian euclidian;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
 		character = new PathingActor(center.position.x, center.position.y, 100);
-		breadcrumbs = new Breadcrumbs(100, 0.1);
+		breadcrumbs = new Breadcrumbs(200, 0.1);
 
 		aStar = new AStar();
-		euclidian = new Euclidian();
 
 		PApplet.main("execution.PathFollowing");
 	}
@@ -68,7 +67,7 @@ public class PathFollowing extends PApplet {
 
 	public void mousePressed() {
 		Path path = aStar.path(tileGraph, tileGraph.closestTo(character.getKinematic().position),
-				tileGraph.closestTo(new Vector(mouseX, viewHeight - mouseY)), euclidian);
+				tileGraph.closestTo(new Vector(mouseX, viewHeight - mouseY)), new Manhattan());
 		System.out.println("Path found");
 		character.setPath(path);
 	}
