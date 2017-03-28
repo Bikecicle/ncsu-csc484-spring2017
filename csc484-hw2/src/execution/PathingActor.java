@@ -9,14 +9,12 @@ public class PathingActor implements Actor {
 
 	private Kinematic kinematic;
 	private FollowPath follow;
-	private Path path;
 	private double maxSpeed;
 
-	public PathingActor(double posx, double posy, Path path, double maxSpeed) {
+	public PathingActor(double posx, double posy, double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 		kinematic = new Kinematic(posx, posy);
-		this.path = path;
-		follow = new FollowPath(kinematic, path, 100);
+		follow = new FollowPath(kinematic);
 	}
 
 	public Kinematic getKinematic() {
@@ -30,6 +28,6 @@ public class PathingActor implements Actor {
 	}
 	
 	public void setPath(Path path) {
-		this.path = path;
+		follow.path = path;
 	}
 }

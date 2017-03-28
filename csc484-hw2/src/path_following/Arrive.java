@@ -28,8 +28,10 @@ public class Arrive implements SteeringBehavior {
 		SteeringOutput steering = new SteeringOutput();
 		Vector direction = target.position.subtract(character.position);
 		double distance = direction.magnitude();
-		if (distance < targetRadius)
+		if (distance < targetRadius) {
+			character.velocity = character.velocity.scale(0);
 			return steering;
+		}
 		double targetSpeed = 0;
 		if (distance > slowRadius)
 			targetSpeed = maxSpeed;

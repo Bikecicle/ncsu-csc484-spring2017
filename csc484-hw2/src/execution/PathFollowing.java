@@ -5,7 +5,11 @@ import general.Breadcrumbs;
 import general.Kinematic;
 import general.Vector;
 import graph.AdjacencyList;
+import graph.Edge;
 import graph.Node;
+import path_finding.AStar;
+import path_finding.Euclidian;
+import path_finding.Path;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -20,14 +24,20 @@ public class PathFollowing extends PApplet {
 	private static Breadcrumbs breadcrumbs;
 
 	public static PImage img;
+	public static AdjacencyList tileGraph;
+
+	public static AStar aStar;
+	public static Euclidian euclidian;
 
 	private static long timestamp;
 
 	public static void main(String[] args) {
 		center = new Kinematic(viewWidth / 2, viewHeight / 2);
-		// character = new PathingActor(center.position.x, center.position.y,
-		// null, 400);
-		breadcrumbs = new Breadcrumbs(30, 0.1);
+		character = new PathingActor(center.position.x, center.position.y, 100);
+		breadcrumbs = new Breadcrumbs(100, 0.1);
+
+		aStar = new AStar();
+		euclidian = new Euclidian();
 
 		PApplet.main("execution.PathFollowing");
 	}
@@ -38,7 +48,8 @@ public class PathFollowing extends PApplet {
 
 	public void setup() {
 		img = loadImage("living_room.png");
-		fill(120);
+		image(img, 0, 0);
+		buildTileGraph();
 		timestamp = System.nanoTime();
 	}
 
@@ -47,15 +58,19 @@ public class PathFollowing extends PApplet {
 		timestamp = System.nanoTime();
 		double dt = (timestamp - timestampPrev) / 1000000000.0;
 		image(img, 0, 0);
+		//renderTileGraph();
 
-		// character.update(dt);
-		// breadcrumbs.add(character.getKinematic().position, timestamp);
-		// renderBreadcrumbs(breadcrumbs);
-		// renderActor(character);
+		character.update(dt);
+		breadcrumbs.add(character.getKinematic().position, timestamp);
+		renderBreadcrumbs(breadcrumbs);
+		renderActor(character);
 	}
 
 	public void mousePressed() {
-		// character.setTarget(new Kinematic(mouseX, viewHeight - mouseY));
+		Path path = aStar.path(tileGraph, tileGraph.closestTo(character.getKinematic().position),
+				tileGraph.closestTo(new Vector(mouseX, viewHeight - mouseY)), euclidian);
+		System.out.println("Path found");
+		character.setPath(path);
 	}
 
 	private void renderActor(Actor agent) {
@@ -78,17 +93,27 @@ public class PathFollowing extends PApplet {
 		}
 	}
 
+	private void renderTileGraph() {
+		for (Node node : tileGraph.nodeList) {
+			ellipse((float) node.position.x, (float) (viewHeight - node.position.y), 3f, 3f);
+		}
+		for (Edge edge : tileGraph.edgeList) {
+			line((float) edge.origin.position.x, (float) (viewHeight - edge.origin.position.y),
+					(float) edge.destination.position.x, (float) (viewHeight - edge.destination.position.y));
+		}
+	}
+
 	private void buildTileGraph() {
 		int tileWidth = 2 * characterRadius;
 		int xtiles = viewWidth / tileWidth;
 		int ytiles = viewHeight / tileWidth;
-		AdjacencyList tileGraph = new AdjacencyList();
+		tileGraph = new AdjacencyList();
 		boolean[][] tiles = new boolean[xtiles][ytiles];
 
 		loadPixels();
 		for (int i = 0; i < viewHeight; i++) {
 			for (int j = 0; j < viewWidth; j++) {
-				if (pixels[i * viewWidth + j] < 100) {
+				if (pixels[i * viewWidth + j] < color(100)) {
 					tiles[j / tileWidth][i / tileWidth] = true;
 				}
 			}
@@ -96,9 +121,21 @@ public class PathFollowing extends PApplet {
 		for (int i = 0; i < ytiles; i++) {
 			for (int j = 0; j < xtiles; j++) {
 				if (!tiles[j][i]) {
-					tileGraph.addNode(new Node((i + "," + j).hashCode(), (ytiles - i) * tileWidth, j * tileWidth + characterRadius));
+					tileGraph.addNode(new Node(i * xtiles + j, (ytiles - i - 1) * tileWidth + characterRadius,
+							j * tileWidth + characterRadius));
 				}
 			}
+		}
+		for (Node node : tileGraph.nodeList) {
+			int id = node.id;
+			if (id % xtiles != 0)
+				tileGraph.addDoubleEdge(id, id - 1);
+			if (id % xtiles != xtiles - 1)
+				tileGraph.addDoubleEdge(id, id + 1);
+			if (id >= xtiles)
+				tileGraph.addDoubleEdge(id, id - xtiles);
+			if (id < xtiles * (ytiles - 1))
+				tileGraph.addDoubleEdge(id, id + xtiles);
 		}
 	}
 }

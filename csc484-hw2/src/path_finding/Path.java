@@ -8,36 +8,30 @@ public class Path extends ArrayList<Edge> {
 
 	private static final long serialVersionUID = -52890127586107941L;
 
-	public double getParam(Vector position, double lastParam) {
-		double shortestDist = Double.POSITIVE_INFINITY;
-		double param = 0;
-		Edge closest = null;
+	public int getParam(Vector position, double lastParam) {
+		double shortestDist = position.distance(get(0).origin.position);
+		int param = 0;
+		int closest = 0;
 		for (Edge edge : this) {
-			param += edge.weight;
+			param++;
 			if (param >= lastParam) {
-				double dist = position.subtract(edge.destination.position).magnitude();
+				double dist = position.distance(edge.destination.position);
 				if (dist < shortestDist) {
 					shortestDist = dist;
-					closest = edge;
+					closest = param;
 				}
 			}
 		}
-		for (Edge edge : this) {
-			param += edge.weight;
-			if (edge == closest)
-				return param;
-		}
-		return -1;
+		return closest;
 	}
 
-	public Vector getPosition(double param) {
-		double currentParam = 0;
-		for (Edge edge : this) {
-			currentParam += edge.weight;
-			if ( currentParam >= param ) 
-				return edge.destination.position.copy();
+	public Vector getPosition(int param) {
+		if (param == 0)
+			return get(0).origin.position;
+		if (param - 1 == size() ) {
+			return null;
 		}
-		return null;
+		return get(param - 1).destination.position;
 	}
 
 	/**

@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import general.Vector;
+
 public class AdjacencyList {
 
 	public List<Node> nodeList;
@@ -29,7 +31,7 @@ public class AdjacencyList {
 	public void addDoubleEdge(int originId, int destinationId) {
 		Node origin = findNode(originId);
 		Node destination = findNode(destinationId);
-		if (!hasEdge(originId, destinationId)) {
+		if (!hasEdge(originId, destinationId) && origin != null && destination != null) {
 			double weight = Math.sqrt(Math.pow(destination.position.x - origin.position.x, 2)
 					+ Math.pow(destination.position.y - origin.position.y, 2));
 			edgeList.add(new Edge(origin, destination, weight));
@@ -96,6 +98,19 @@ public class AdjacencyList {
 		}
 		return graph;
 
+	}
+
+	public Node closestTo(Vector position) {
+		Node closest = null;
+		double shortestDist = Double.POSITIVE_INFINITY;
+		for (Node node : nodeList) {
+			double dist = position.distance(node.position);
+			if (dist < shortestDist) {
+				closest = node;
+				shortestDist = dist;
+			}
+		}
+		return closest;
 	}
 
 }

@@ -35,6 +35,8 @@ public class Kinematic extends Static {
 				position.y -= 620;
 			else if (position.y < -10)
 				position.y += 620;
+			if (velocity.magnitude() < 0.1)
+				velocity = velocity.scale(0);
 		}
 	}
 
