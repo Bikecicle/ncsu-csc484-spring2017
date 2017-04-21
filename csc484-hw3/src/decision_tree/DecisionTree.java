@@ -1,6 +1,7 @@
 package decision_tree;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DecisionTree implements Serializable {
@@ -9,6 +10,12 @@ public class DecisionTree implements Serializable {
 
 	private DecisionTreeNode root;
 	private List<DecisionTreeNode> nodes;
+
+	public DecisionTree(DecisionTreeNode node) {
+		root = node;
+		nodes = new ArrayList<DecisionTreeNode>();
+		nodes.add(node);
+	}
 
 	public void add(DecisionTreeNode newNode, int parentId, boolean branch) {
 		for (DecisionTreeNode node : nodes) {
@@ -21,5 +28,9 @@ public class DecisionTree implements Serializable {
 			}
 		}
 		nodes.add(newNode);
+	}
+	
+	public DecisionTreeNode getRoot() {
+		return root;
 	}
 }

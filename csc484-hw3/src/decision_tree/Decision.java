@@ -9,11 +9,11 @@ public class Decision extends DecisionTreeNode {
 	public DecisionTreeNode trueNode;
 	public DecisionTreeNode falseNode;
 	public String parameter;
-	
-	public Decision(DecisionTreeNode trueNode, DecisionTreeNode falseNode, String parameter, int id) {
+
+	public Decision(String parameter, int id) {
 		super(id);
-		this.trueNode = trueNode;
-		this.falseNode = falseNode;
+		this.trueNode = null;
+		this.falseNode = null;
 		this.parameter = parameter;
 	}
 

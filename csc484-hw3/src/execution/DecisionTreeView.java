@@ -1,17 +1,17 @@
 package execution;
 
+import java.util.HashMap;
+
 import decision_tree.DecisionTree;
+import decision_tree.Parameter;
 import general.Actor;
 import general.Breadcrumbs;
-import general.Kinematic;
 import general.Vector;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
 import path_finding.AStar;
 import path_finding.Euclidian;
-import path_finding.Manhattan;
-import path_finding.Path;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -24,6 +24,7 @@ public class DecisionTreeView extends PApplet {
 	private static DecisionActor character;
 	private static DecisionTree characterTree;
 	
+	private static HashMap<String, Parameter> paramDict;
 
 	private static boolean fridgePing;
 	private static boolean tvPing;
@@ -63,10 +64,41 @@ public class DecisionTreeView extends PApplet {
 		aStar = new AStar();
 		euclidian = new Euclidian();
 		
-		characterTree = new DecisionTree();
+		constructParameters();
+		buildCharacterTree();
 		
-
 		PApplet.main("execution.DecisionTreeView");
+	}
+
+	private static void constructParameters() {
+		paramDict = new HashMap<String, Parameter>();
+		paramDict.put("fridge", new Parameter() {
+			
+			@Override
+			public boolean getValue() {
+				return fridgePing;
+			}
+		});
+		paramDict.put("tv", new Parameter() {
+			
+			@Override
+			public boolean getValue() {
+				return tvPing;
+			}
+		});
+		paramDict.put("toilet", new Parameter() {
+			
+			@Override
+			public boolean getValue() {
+				return toiletPing;
+			}
+		});
+	}
+	
+
+	private static void buildCharacterTree() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public void settings() {
@@ -91,13 +123,6 @@ public class DecisionTreeView extends PApplet {
 		breadcrumbs.add(character.getKinematic().position, timestamp);
 		renderBreadcrumbs(breadcrumbs);
 		renderActor(character);
-	}
-
-	public void mousePressed() {
-		Path path = aStar.path(tileGraph, tileGraph.closestTo(character.getKinematic().position),
-				tileGraph.closestTo(new Vector(mouseX, viewHeight - mouseY)), euclidian);
-		System.out.println("Path found");
-		character.setPath(path);
 	}
 
 	private void renderActor(Actor agent) {
