@@ -10,8 +10,8 @@ public class Decision extends DecisionTreeNode {
 	public DecisionTreeNode falseNode;
 	public String parameter;
 
-	public Decision(String parameter, int id) {
-		super(id);
+	public Decision(String parameter, String id) {
+		super(id.hashCode());
 		this.trueNode = null;
 		this.falseNode = null;
 		this.parameter = parameter;

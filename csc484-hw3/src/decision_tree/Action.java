@@ -10,8 +10,8 @@ public class Action extends DecisionTreeNode {
 
 	public SteeringBehavior behavior;
 	
-	public Action(SteeringBehavior behavior, int id) {
-		super(id);
+	public Action(SteeringBehavior behavior, String id) {
+		super(id.hashCode());
 		this.behavior = behavior;
 	}
 

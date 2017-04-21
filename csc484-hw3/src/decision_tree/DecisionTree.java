@@ -17,9 +17,10 @@ public class DecisionTree implements Serializable {
 		nodes.add(node);
 	}
 
-	public void add(DecisionTreeNode newNode, int parentId, boolean branch) {
+	public void add(DecisionTreeNode newNode, String parentId, boolean branch) {
+		int id = parentId.hashCode();
 		for (DecisionTreeNode node : nodes) {
-			if (node.id == parentId) {
+			if (node.id == id) {
 				if (branch)
 					((Decision) node).trueNode = newNode;
 				else

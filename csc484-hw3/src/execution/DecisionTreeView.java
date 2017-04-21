@@ -2,7 +2,10 @@ package execution;
 
 import java.util.HashMap;
 
+import decision_tree.Action;
+import decision_tree.Decision;
 import decision_tree.DecisionTree;
+import decision_tree.DecisionTreeNode;
 import decision_tree.Parameter;
 import general.Actor;
 import general.Breadcrumbs;
@@ -12,6 +15,8 @@ import graph.Edge;
 import graph.Node;
 import path_finding.AStar;
 import path_finding.Euclidian;
+import path_following.FollowPath;
+import path_following.SteeringBehavior;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -95,9 +100,27 @@ public class DecisionTreeView extends PApplet {
 		});
 	}
 	
-
 	private static void buildCharacterTree() {
-		// TODO Auto-generated method stub
+		SteeringBehavior goToFridge = new FollowPath(character.getKinematic());
+				//aStar.path(tileGraph, tileGraph.closestTo(character.getKinematic().position), tileGraph.closestTo(fridgePos), euclidian);
+		SteeringBehavior goToTv;
+		SteeringBehavior goToToilet;
+		SteeringBehavior goToBreaker;
+		SteeringBehavior wander;
+		
+		characterTree = new DecisionTree(new Decision("fridge", "a"));
+		characterTree.add(new Decision("tv", "a1"), "a", true);
+		characterTree.add(new Action(goToBreaker, "a1b"), "a1", true);
+		characterTree.add(new Decision("toilet", "a2"), "a1", false);
+		characterTree.add(new Action(goToBreaker, "a2b"), "a2", true);
+		characterTree.add(new Action(goToFridge, "a3"), "a2", false);
+		characterTree.add(new Decision("tv", "b"), "a", false);
+		characterTree.add(new Decision("toilet", "b1"), "b", true);
+		characterTree.add(new Action(goToBreaker, "b1b"), "b1", true);
+		characterTree.add(new Action(goToTv, "b2"), "b1", false);
+		characterTree.add(new Decision("toilet", "c"), "b", false);
+		characterTree.add(new Action(goToToilet, "c1"), "c", true);
+		characterTree.add(new Action(wander, "d"), "c", false);
 		
 	}
 

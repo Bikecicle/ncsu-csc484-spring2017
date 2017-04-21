@@ -17,6 +17,12 @@ public class FollowPath extends Arrive implements SteeringBehavior {
 		target.position = character.position.copy();
 		path = null;
 	}
+	
+	public FollowPath(Kinematic character, Path path) {
+		super(character, new Kinematic(), 800, 400, 1, 60);
+		target.position = character.position.copy();
+		this.path = path;
+	}
 
 	@Override
 	public SteeringOutput getSteering() {
