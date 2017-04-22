@@ -16,6 +16,7 @@ import graph.Node;
 import path_finding.AStar;
 import path_finding.Euclidian;
 import path_following.FollowPath;
+import path_following.PathTo;
 import path_following.SteeringBehavior;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -30,6 +31,7 @@ public class DecisionTreeView extends PApplet {
 	private static DecisionTree characterTree;
 	
 	private static HashMap<String, Parameter> paramDict;
+	private static HashMap<String, SteeringBehavior> behaviorDict;
 
 	private static boolean fridgePing;
 	private static boolean tvPing;
@@ -39,8 +41,7 @@ public class DecisionTreeView extends PApplet {
 	private static Vector tvPos;
 	private static Vector toiletPos;
 	private static Vector breakerPos;
-
-	private static Vector characterSpawn;
+	private static Vector safezonePos;
 
 	private static Breadcrumbs breadcrumbs;
 
@@ -60,22 +61,21 @@ public class DecisionTreeView extends PApplet {
 		fridgePos = new Vector(145, viewHeight - 200);
 		tvPos = new Vector(288, viewHeight - 350);
 		toiletPos = new Vector(122, viewHeight - 390);
-		characterSpawn = new Vector(230, viewHeight - 640);
 		breakerPos = new Vector(121, viewHeight - 292);
 
-		character = new DecisionActor(characterSpawn.x, characterSpawn.y, 100);
+		character = new DecisionActor(safezonePos.x, safezonePos.y, 100);
 		breadcrumbs = new Breadcrumbs(100, 0.1);
 
 		aStar = new AStar();
 		euclidian = new Euclidian();
 		
-		constructParameters();
+		constructDictionaries();
 		buildCharacterTree();
 		
 		PApplet.main("execution.DecisionTreeView");
 	}
 
-	private static void constructParameters() {
+	private static void constructDictionaries() {
 		paramDict = new HashMap<String, Parameter>();
 		paramDict.put("fridge", new Parameter() {
 			
@@ -98,15 +98,19 @@ public class DecisionTreeView extends PApplet {
 				return toiletPing;
 			}
 		});
+		
+		behaviorDict = new HashMap<String, SteeringBehavior>();
+		behaviorDict.put("goToFridge", new PathTo(character.getKinematic(), tileGraph, fridgePos));
+		behaviorDict.put("goToTv", new PathTo(character.getKinematic(), tileGraph, tvPos));
+		behaviorDict.put("goToToilet")
 	}
 	
 	private static void buildCharacterTree() {
-		SteeringBehavior goToFridge = new FollowPath(character.getKinematic());
-				//aStar.path(tileGraph, tileGraph.closestTo(character.getKinematic().position), tileGraph.closestTo(fridgePos), euclidian);
-		SteeringBehavior goToTv;
-		SteeringBehavior goToToilet;
-		SteeringBehavior goToBreaker;
-		SteeringBehavior wander;
+		SteeringBehavior goToFridge = ;
+		SteeringBehavior goToTv = ;
+		SteeringBehavior goToToilet = new PathTo(character.getKinematic(), tileGraph, toiletPos);
+		SteeringBehavior goToBreaker = new PathTo(character.getKinematic(), tileGraph, breakerPos);
+		SteeringBehavior goToSafezone = new PathTo(character.getKinematic(), tileGraph, safezonePos);
 		
 		characterTree = new DecisionTree(new Decision("fridge", "a"));
 		characterTree.add(new Decision("tv", "a1"), "a", true);
@@ -120,7 +124,7 @@ public class DecisionTreeView extends PApplet {
 		characterTree.add(new Action(goToTv, "b2"), "b1", false);
 		characterTree.add(new Decision("toilet", "c"), "b", false);
 		characterTree.add(new Action(goToToilet, "c1"), "c", true);
-		characterTree.add(new Action(wander, "d"), "c", false);
+		characterTree.add(new Action(goToSafezone, "d"), "c", false);
 		
 	}
 
