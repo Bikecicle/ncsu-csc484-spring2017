@@ -26,7 +26,7 @@ public class FollowPath extends Arrive implements SteeringBehavior {
 
 	@Override
 	public SteeringOutput getSteering() {
-		if (path != null) {
+		if (path != null && path.size() > 0) {
 			Vector futurePos = character.position.add(character.velocity.scale(predictTime));
 			currentParam = path.getParam(futurePos, currentParam);
 			int targetParam = currentParam + pathOffset;

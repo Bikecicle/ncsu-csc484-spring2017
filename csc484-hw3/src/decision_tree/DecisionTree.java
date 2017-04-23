@@ -2,6 +2,7 @@ package decision_tree;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DecisionTree implements Serializable {
@@ -30,7 +31,11 @@ public class DecisionTree implements Serializable {
 		}
 		nodes.add(newNode);
 	}
-	
+
+	public String makeDecision(HashMap<String, Parameter> parameters) {
+		return ((Action) root.makeDecision(parameters)).behavior;
+	}
+
 	public DecisionTreeNode getRoot() {
 		return root;
 	}

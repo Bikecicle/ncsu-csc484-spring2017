@@ -2,15 +2,13 @@ package decision_tree;
 
 import java.util.HashMap;
 
-import path_following.SteeringBehavior;
-
 public class Action extends DecisionTreeNode {
 
 	private static final long serialVersionUID = 9060833469771762345L;
 
-	public SteeringBehavior behavior;
+	public String behavior;
 	
-	public Action(SteeringBehavior behavior, String id) {
+	public Action(String behavior, String id) {
 		super(id.hashCode());
 		this.behavior = behavior;
 	}

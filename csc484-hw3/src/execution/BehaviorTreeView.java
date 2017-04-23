@@ -19,7 +19,7 @@ import path_following.SteeringBehavior;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class DecisionTreeView extends PApplet {
+public class BehaviorTreeView extends PApplet {
 
 	public static final int viewWidth = 700;
 	public static final int viewHeight = 700;
@@ -68,7 +68,7 @@ public class DecisionTreeView extends PApplet {
 		character = new DecisionActor(safezonePos.x, safezonePos.y, 100);
 		breadcrumbs = new Breadcrumbs(20, 0.1);
 
-		PApplet.main("execution.DecisionTreeView");
+		PApplet.main("execution.BehaviorTreeView");
 	}
 
 	private void constructDictionaries() {
