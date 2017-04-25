@@ -1,25 +1,29 @@
 package behavior_tree;
 
-import java.util.Stack;
-
 public class Selector extends Task {
+
+	@Override
+	public BehaviorTreeNode run() {
+		if (branch == 0) {
+			branch = 1;
+			return children.get(0);
+		} else if (children.get(branch - 1).status) {
+			branch = 0;
+			status = true;
+			return null;
+		} else if (branch == children.size()) {
+			branch = 0;
+			status = false;
+			return null;
+		} else {
+			branch++;
+			return children.get(branch - 1);
+		}
+	}
 
 	/**
 	 * @Override public boolean run() { for (BehaviorTreeNode child : children)
 	 *           { if (child.run()) return true; } return false; }
 	 */
-
-	@Override
-	public boolean run(Stack<BehaviorTreeNode> stack, boolean ret) {
-
-		if (status == 0) {
-			stack.push(children.get(0));
-		} else if (ret) {
-			stack.pop();
-			return true;
-		} else if (status == children.size()){
-			return false;
-		}
-	}
 
 }

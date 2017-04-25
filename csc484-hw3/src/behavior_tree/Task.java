@@ -3,13 +3,13 @@ package behavior_tree;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Task implements BehaviorTreeNode{
-	
+public abstract class Task extends BehaviorTreeNode {
+
 	public List<BehaviorTreeNode> children;
-	public int status;
+	public int branch;
 
 	public Task() {
 		children = new ArrayList<BehaviorTreeNode>();
-		status = 0;
+		branch = 0;
 	}
 }

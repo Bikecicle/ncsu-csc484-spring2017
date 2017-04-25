@@ -1,8 +1,8 @@
 package behavior_tree;
 
-import java.util.Stack;
+public abstract class BehaviorTreeNode {
+	
+	public boolean status;
 
-public interface BehaviorTreeNode {
-
-	public boolean run(Stack<BehaviorTreeNode> stack, boolean ret);
+	public abstract BehaviorTreeNode run();
 }
