@@ -96,11 +96,11 @@ public class DecisionTreeView extends PApplet {
 		});
 
 		behaviorDict = new HashMap<String, SteeringBehavior>();
-		behaviorDict.put("goToFridge", new PathTo(character.getKinematic(), tileGraph, fridgePos));
-		behaviorDict.put("goToTv", new PathTo(character.getKinematic(), tileGraph, tvPos));
-		behaviorDict.put("goToHvac", new PathTo(character.getKinematic(), tileGraph, hvacPos));
-		behaviorDict.put("goToBreaker", new PathTo(character.getKinematic(), tileGraph, breakerPos));
-		behaviorDict.put("goToSafezone", new PathTo(character.getKinematic(), tileGraph, safezonePos));
+		behaviorDict.put("goToFridge", new PathTo(character.getKinematic(), tileGraph, fridgePos, 800, 400));
+		behaviorDict.put("goToTv", new PathTo(character.getKinematic(), tileGraph, tvPos, 800, 400));
+		behaviorDict.put("goToHvac", new PathTo(character.getKinematic(), tileGraph, hvacPos, 800, 400));
+		behaviorDict.put("goToBreaker", new PathTo(character.getKinematic(), tileGraph, breakerPos, 800, 400));
+		behaviorDict.put("goToSafezone", new PathTo(character.getKinematic(), tileGraph, safezonePos, 800, 400));
 	}
 
 	private void buildCharacterTree() {
@@ -140,13 +140,14 @@ public class DecisionTreeView extends PApplet {
 		dt = (timestamp - timestampPrev) / 1000000000.0;
 		aidt += dt;
 		image(img, 0, 0);
-		
+		renderTileGraph();
+
 		if (aidt > 0.5) {
 			character.setBehavior(behaviorDict.get(characterTree.makeDecision(paramDict)));
 			randomizePings();
 			aidt = 0;
 		}
-		
+
 		character.update(dt);
 		breadcrumbs.add(character.getKinematic().position, timestamp);
 		updatePings();
@@ -193,7 +194,7 @@ public class DecisionTreeView extends PApplet {
 		if (hvacPing)
 			ellipse((int) hvacPos.x, (int) (viewHeight - hvacPos.y), pingRadius, pingRadius);
 	}
-	
+
 	private void randomizePings() {
 		double p = 0.98;
 		if (Math.random() > p)
@@ -203,7 +204,7 @@ public class DecisionTreeView extends PApplet {
 		if (Math.random() > p)
 			hvacPing = true;
 	}
-	
+
 	private void updatePings() {
 		if (character.getKinematic().position.isCloseTo(fridgePos, 10))
 			fridgePing = false;

@@ -14,7 +14,7 @@ public class PathingActor implements Actor {
 	public PathingActor(double posx, double posy, double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 		kinematic = new Kinematic(posx, posy);
-		follow = new FollowPath(kinematic);
+		follow = new FollowPath(kinematic, 800, 400);
 	}
 
 	public Kinematic getKinematic() {

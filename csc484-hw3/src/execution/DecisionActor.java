@@ -23,15 +23,16 @@ public class DecisionActor implements Actor {
 	}
 
 	public void update(double time) {
-		kinematic.update(behavior.getSteering(), maxSpeed, time);
+		if (behavior != null)
+			kinematic.update(behavior.getSteering(), maxSpeed, time);
 		if (kinematic.velocity.magnitude() > 0)
 			kinematic.orientation = kinematic.velocity.direction();
 	}
-	
+
 	public void setBehavior(SteeringBehavior behavior) {
 		this.behavior = behavior;
 	}
-	
+
 	public boolean isFollowingPath() {
 		return isFollowingPath;
 	}

@@ -12,8 +12,8 @@ public class FollowPath extends Arrive implements SteeringBehavior {
 	public int currentParam;
 	public double predictTime = 0.1;
 
-	public FollowPath(Kinematic character) {
-		super(character, new Kinematic(), 800, 400, 1, 60);
+	public FollowPath(Kinematic character, double maxAcceleration, double maxSpeed) {
+		super(character, new Kinematic(), maxAcceleration, maxSpeed, 1, 60);
 		target.position = character.position.copy();
 		path = null;
 	}

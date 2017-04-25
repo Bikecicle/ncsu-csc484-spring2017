@@ -15,6 +15,7 @@ public class ModifyBehavior extends Task{
 
 	@Override
 	public BehaviorTreeNode run() {
+		System.out.println(id);
 		actor.setBehavior(behavior);
 		status = true;
 		return null;
