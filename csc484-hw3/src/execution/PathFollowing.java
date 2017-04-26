@@ -93,6 +93,7 @@ public class PathFollowing extends PApplet {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void renderTileGraph() {
 		for (Node node : tileGraph.nodeList) {
 			ellipse((float) node.position.x, (float) (viewHeight - node.position.y), 3f, 3f);

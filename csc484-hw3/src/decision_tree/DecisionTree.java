@@ -9,8 +9,8 @@ public class DecisionTree implements Serializable {
 
 	private static final long serialVersionUID = -1340296414305551855L;
 
-	private DecisionTreeNode root;
-	private List<DecisionTreeNode> nodes;
+	public DecisionTreeNode root;
+	public List<DecisionTreeNode> nodes;
 
 	public DecisionTree(DecisionTreeNode node) {
 		root = node;
@@ -19,9 +19,8 @@ public class DecisionTree implements Serializable {
 	}
 
 	public void add(DecisionTreeNode newNode, String parentId, boolean branch) {
-		int id = parentId.hashCode();
 		for (DecisionTreeNode node : nodes) {
-			if (node.id == id) {
+			if (node.id.equals(parentId)) {
 				if (branch)
 					((Decision) node).trueNode = newNode;
 				else
@@ -32,8 +31,8 @@ public class DecisionTree implements Serializable {
 		nodes.add(newNode);
 	}
 
-	public String makeDecision(HashMap<String, Parameter> parameters) {
-		return ((Action) root.makeDecision(parameters)).behavior;
+	public String makeDecision(HashMap<String, Attribute> attributes) {
+		return ((Action) root.makeDecision(attributes)).behavior;
 	}
 
 	public DecisionTreeNode getRoot() {

@@ -1,6 +1,6 @@
 package decision_tree;
 
-public interface Parameter {
+public interface Attribute {
 
 	public boolean getValue();
 }

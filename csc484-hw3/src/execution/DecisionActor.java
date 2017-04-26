@@ -10,6 +10,7 @@ public class DecisionActor implements Actor {
 	private SteeringBehavior behavior;
 	private double maxSpeed;
 	private boolean isFollowingPath;
+	public String action;
 
 	public DecisionActor(double posx, double posy, double maxSpeed) {
 		this.maxSpeed = maxSpeed;
@@ -29,8 +30,9 @@ public class DecisionActor implements Actor {
 			kinematic.orientation = kinematic.velocity.direction();
 	}
 
-	public void setBehavior(SteeringBehavior behavior) {
+	public void setBehavior(SteeringBehavior behavior, String action) {
 		this.behavior = behavior;
+		this.action = action;	
 	}
 
 	public boolean isFollowingPath() {

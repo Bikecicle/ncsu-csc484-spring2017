@@ -7,12 +7,12 @@ public abstract class DecisionTreeNode implements Serializable {
 	
 	private static final long serialVersionUID = 8871640978552713157L;
 	
-	public int id;
+	public String id;
 	
-	public DecisionTreeNode(int id) {
+	public DecisionTreeNode(String id) {
 		this.id = id;
 	}
 
-	public abstract DecisionTreeNode makeDecision(HashMap<String, Parameter> parameters);
+	public abstract DecisionTreeNode makeDecision(HashMap<String, Attribute> attributes);
 	
 }

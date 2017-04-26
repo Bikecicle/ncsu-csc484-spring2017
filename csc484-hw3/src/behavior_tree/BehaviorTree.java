@@ -1,17 +1,20 @@
 package behavior_tree;
 
-import java.util.Stack;
-
 public class BehaviorTree {
 
 	private BehaviorTreeNode root;
-	private Stack<BehaviorTreeNode> stack;
+	//private Stack<BehaviorTreeNode> stack;
 
 	public BehaviorTree(BehaviorTreeNode root) {
 		this.root = root;
-		stack = new Stack<BehaviorTreeNode>();
+		//stack = new Stack<BehaviorTreeNode>();
+	}
+	
+	public boolean run() {
+		return root.run();
 	}
 
+	/**
 	public void step() {
 		if (stack.isEmpty())
 			stack.push(root);
@@ -22,4 +25,5 @@ public class BehaviorTree {
 		else
 			stack.push(next);
 	}
+	*/
 }

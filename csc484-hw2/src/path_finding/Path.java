@@ -10,28 +10,28 @@ public class Path extends ArrayList<Edge> {
 
 	public int getParam(Vector position, double lastParam) {
 		double shortestDist = position.distance(get(0).origin.position);
-		int param = 0;
+		int attribute = 0;
 		int closest = 0;
 		for (Edge edge : this) {
-			param++;
-			if (param >= lastParam) {
+			attribute++;
+			if (attribute >= lastParam) {
 				double dist = position.distance(edge.destination.position);
 				if (dist < shortestDist) {
 					shortestDist = dist;
-					closest = param;
+					closest = attribute;
 				}
 			}
 		}
 		return closest;
 	}
 
-	public Vector getPosition(int param) {
-		if (param == 0)
+	public Vector getPosition(int attribute) {
+		if (attribute == 0)
 			return get(0).origin.position;
-		if (param - 1 == size() ) {
+		if (attribute - 1 == size() ) {
 			return null;
 		}
-		return get(param - 1).destination.position;
+		return get(attribute - 1).destination.position;
 	}
 
 	/**
@@ -49,8 +49,8 @@ public class Path extends ArrayList<Edge> {
 	 * A2.magnitude(); if (a2 < distance) { closest = edge; distance = a2;
 	 * edgeParam = a1; } }
 	 * 
-	 * } double param = edgeParam; for (Edge edge : this) { if (edge == closest)
-	 * break; param += edge.weight; } return param; }
+	 * } double attribute = edgeParam; for (Edge edge : this) { if (edge == closest)
+	 * break; attribute += edge.weight; } return attribute; }
 	 */
 
 }

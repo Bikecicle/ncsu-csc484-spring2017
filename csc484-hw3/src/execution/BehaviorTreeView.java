@@ -1,18 +1,23 @@
 package execution;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import behavior_tree.BehaviorTree;
 import behavior_tree.Inverter;
 import behavior_tree.ModifyBehavior;
 import behavior_tree.Selector;
 import behavior_tree.Sequence;
-import behavior_tree.TestParameter;
-import behavior_tree.UntilFail;
+import behavior_tree.TestAttribute;
 import decision_tree.Action;
 import decision_tree.Decision;
 import decision_tree.DecisionTree;
-import decision_tree.Parameter;
+import decision_tree.Attribute;
 import general.Actor;
 import general.Apartment;
 import general.Breadcrumbs;
@@ -22,12 +27,12 @@ import general.Vector;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
+import learning.Example;
 import path_finding.AStar;
 import path_finding.Euclidian;
 import path_finding.Path;
 import path_following.Chase;
 import path_following.PathTo;
-import path_following.RandomPath;
 import path_following.SteeringBehavior;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -49,7 +54,7 @@ public class BehaviorTreeView extends PApplet {
 	private static DecisionActor monster;
 	private static BehaviorTree monsterTree;
 
-	private static HashMap<String, Parameter> paramDict;
+	private static HashMap<String, Attribute> attributeDict;
 	private static HashMap<String, SteeringBehavior> behaviorDict;
 
 	private static boolean fridgePing;
@@ -85,7 +90,10 @@ public class BehaviorTreeView extends PApplet {
 
 	private static long timestamp;
 	private static double dt;
-	private static double aidt;
+
+	private static ObjectOutputStream dataOut;
+	private static String dataFileName = "data.txt";
+	private static int dataCount = 0;
 
 	public static void main(String[] args) {
 		fridgePing = false;
@@ -99,6 +107,16 @@ public class BehaviorTreeView extends PApplet {
 		character = new DecisionActor(characterSpawn.x, characterSpawn.y, 100);
 		monster = new DecisionActor(monsterSpawn.x, monsterSpawn.y, 80);
 		breadcrumbs = new Breadcrumbs(20, 0.1);
+		
+		try {
+			dataOut = new ObjectOutputStream(new FileOutputStream(dataFileName));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		PApplet.main("execution.BehaviorTreeView");
 	}
@@ -138,36 +156,36 @@ public class BehaviorTreeView extends PApplet {
 	}
 
 	private void constructDictionaries() {
-		paramDict = new HashMap<String, Parameter>();
-		paramDict.put("fridge", new Parameter() {
+		attributeDict = new HashMap<String, Attribute>();
+		attributeDict.put("fridge", new Attribute() {
 
 			@Override
 			public boolean getValue() {
 				return fridgePing;
 			}
 		});
-		paramDict.put("tv", new Parameter() {
+		attributeDict.put("tv", new Attribute() {
 
 			@Override
 			public boolean getValue() {
 				return tvPing;
 			}
 		});
-		paramDict.put("hvac", new Parameter() {
+		attributeDict.put("hvac", new Attribute() {
 
 			@Override
 			public boolean getValue() {
 				return hvacPing;
 			}
 		});
-		paramDict.put("exposed", new Parameter() {
+		attributeDict.put("exposed", new Attribute() {
 
 			@Override
 			public boolean getValue() {
 				return !closet1.contains(character.getKinematic().position);
 			}
 		});
-		paramDict.put("audible", new Parameter() {
+		attributeDict.put("audible", new Attribute() {
 
 			@Override
 			public boolean getValue() {
@@ -178,7 +196,7 @@ public class BehaviorTreeView extends PApplet {
 				return path.size() <= hearDistance;
 			}
 		});
-		paramDict.put("visible", new Parameter() {
+		attributeDict.put("visible", new Attribute() {
 
 			@Override
 			public boolean getValue() {
@@ -186,13 +204,18 @@ public class BehaviorTreeView extends PApplet {
 						.locate(monster.getKinematic().position);
 			}
 		});
-		paramDict.put("validTarget", new Parameter() {
-			
-			@Override
-			public boolean getValue() {
-				return !closet1.contains(interest.position);
-			}
-		});
+		
+		try {
+			List<String> attributes = new ArrayList<String>();
+			attributes.add("exposed");
+			attributes.add("audible");
+			attributes.add("visible");
+			dataOut.writeObject(attributes);
+			dataOut.reset();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		behaviorDict = new HashMap<String, SteeringBehavior>();
 		behaviorDict.put("goToFridge",
@@ -228,21 +251,19 @@ public class BehaviorTreeView extends PApplet {
 		Sequence sequence2 = new Sequence();
 		Sequence sequence3 = new Sequence();
 		Inverter inverter1 = new Inverter();
-		TestParameter exposed = new TestParameter(paramDict.get("exposed"));
-		TestParameter validTarget = new TestParameter(paramDict.get("validTarget"));
-		TestParameter visible = new TestParameter(paramDict.get("visible"));
-		TestParameter audible = new TestParameter(paramDict.get("audible"));
+		TestAttribute exposed = new TestAttribute(attributeDict.get("exposed"));
+		TestAttribute visible = new TestAttribute(attributeDict.get("visible"));
+		TestAttribute audible = new TestAttribute(attributeDict.get("audible"));
 		ModifyBehavior chase = new ModifyBehavior(new Chase(monster.getKinematic(), tileGraph, character.getKinematic(),
 				maxAcceleration / 2, maxSpeed / 2), monster);
 		ModifyBehavior investigate = new ModifyBehavior(new Chase(monster.getKinematic(), tileGraph,
-				character.getKinematic(), maxAcceleration / 4, maxSpeed / 4), monster);
-		ModifyBehavior wander = new ModifyBehavior(new Chase(monster.getKinematic(), tileGraph,
-				interest, maxAcceleration / 2, maxSpeed / 2), monster);
+				character.getKinematic(), maxAcceleration / 8, maxSpeed / 8), monster);
+		ModifyBehavior wander = new ModifyBehavior(
+				new Chase(monster.getKinematic(), tileGraph, interest, maxAcceleration / 2, maxSpeed / 2), monster);
 
 		selector1.children.add(sequence1);
 		sequence1.children.add(inverter1);
 		inverter1.child = exposed;
-		sequence1.children.add(validTarget);
 		sequence1.children.add(wander);
 		selector1.children.add(sequence3);
 		sequence3.children.add(visible);
@@ -250,11 +271,11 @@ public class BehaviorTreeView extends PApplet {
 		selector1.children.add(sequence2);
 		sequence2.children.add(audible);
 		sequence2.children.add(investigate);
-		
+
 		wander.id = "wander";
 		investigate.id = "investigate";
 		chase.id = "chase";
-		
+
 		monsterTree = new BehaviorTree(selector1);
 	}
 
@@ -277,12 +298,29 @@ public class BehaviorTreeView extends PApplet {
 		long timestampPrev = timestamp;
 		timestamp = System.nanoTime();
 		dt = (timestamp - timestampPrev) / 1000000000.0;
-		aidt += dt;
 		image(img, 0, 0);
 
-		character.setBehavior(behaviorDict.get(characterTree.makeDecision(paramDict)));
-		monsterTree.step();
+		character.setBehavior(behaviorDict.get(characterTree.makeDecision(attributeDict)), "boop");
+		monsterTree.run();
 		randomizePings();
+		
+
+		if (monster.action != null) {
+			Example example = new Example(monster.action);
+			example.attributes.put("exposed", attributeDict.get("exposed").getValue());
+			example.attributes.put("audible", attributeDict.get("audible").getValue());
+			example.attributes.put("visible", attributeDict.get("visible").getValue());
+
+			try {
+				dataOut.writeObject(example);
+				dataOut.reset();
+				System.out.println(dataCount++);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 
 		character.update(dt);
 		monster.update(dt);
@@ -307,6 +345,7 @@ public class BehaviorTreeView extends PApplet {
 		ellipse(x, y, 2.0f * characterRadius, 2.0f * characterRadius);
 	}
 
+	@SuppressWarnings("unused")
 	private void renderBreadcrumbs(Breadcrumbs breadcrumbs) {
 		fill(0);
 		for (Vector crumb : breadcrumbs) {
@@ -342,7 +381,7 @@ public class BehaviorTreeView extends PApplet {
 			hvacPing = true;
 		if (Math.random() > wanderRate)
 			interest.position = new Vector(viewWidth * Math.random(), viewHeight * Math.random());
-			
+
 	}
 
 	private void handleCollisions() {
@@ -357,9 +396,11 @@ public class BehaviorTreeView extends PApplet {
 			tvPing = false;
 			hvacPing = false;
 		}
-		if (character.getKinematic().position.isCloseTo(monster.getKinematic().position, 10)){
+		if (character.getKinematic().position.isCloseTo(monster.getKinematic().position, 10)) {
 			character.getKinematic().position = characterSpawn.copy();
+			character.setBehavior(null, null);
 			monster.getKinematic().position = monsterSpawn.copy();
+			monster.setBehavior(null, null);
 		}
 	}
 

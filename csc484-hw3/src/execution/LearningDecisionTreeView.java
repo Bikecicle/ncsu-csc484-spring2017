@@ -1,33 +1,48 @@
 package execution;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.HashMap;
-
 import decision_tree.Action;
 import decision_tree.Decision;
 import decision_tree.DecisionTree;
+import decision_tree.DecisionTreeNode;
 import decision_tree.Attribute;
 import general.Actor;
+import general.Apartment;
 import general.Breadcrumbs;
+import general.Kinematic;
+import general.Room;
 import general.Vector;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
 import path_finding.AStar;
 import path_finding.Euclidian;
+import path_finding.Path;
+import path_following.Chase;
 import path_following.PathTo;
 import path_following.SteeringBehavior;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class DecisionTreeView extends PApplet {
+public class LearningDecisionTreeView extends PApplet {
 
 	public static final int viewWidth = 700;
 	public static final int viewHeight = 700;
 	public static final int characterRadius = 10;
 	public static final int pingRadius = 50;
+	public static final double pingRate = 0.9996;
+	public static final double wanderRate = 0.996;
+	public static final int maxAcceleration = 800;
+	public static final int maxSpeed = 400;
+	public static final int hearDistance = 15;
 
 	private static DecisionActor character;
 	private static DecisionTree characterTree;
+	private static DecisionActor monster;
+	private static DecisionTree monsterTree;
 
 	private static HashMap<String, Attribute> attributeDict;
 	private static HashMap<String, SteeringBehavior> behaviorDict;
@@ -35,40 +50,86 @@ public class DecisionTreeView extends PApplet {
 	private static boolean fridgePing;
 	private static boolean tvPing;
 	private static boolean hvacPing;
+	private static Kinematic interest;
 
 	private static Vector fridgePos;
 	private static Vector tvPos;
 	private static Vector hvacPos;
 	private static Vector breakerPos;
-	private static Vector safezonePos;
+	private static Vector characterSpawn;
+	private static Vector monsterSpawn;
+
+	private static Apartment apartment;
+
+	private static Room livingRoom;
+	private static Room hallway;
+	private static Room kitchen;
+	private static Room foyer;
+	private static Room balcony;
+	private static Room bedroom1;
+	private static Room bathroom1;
+	private static Room closet1;
+	private static Room bedroom2;
+	private static Room bathroom2;
+	private static Room closet2;
 
 	private static Breadcrumbs breadcrumbs;
 
 	public static PImage img;
 	public static AdjacencyList tileGraph;
 
-	public static AStar aStar;
-	public static Euclidian euclidian;
-
 	private static long timestamp;
 	private static double dt;
-	private static double aidt;
+
 
 	public static void main(String[] args) {
 		fridgePing = false;
 		tvPing = false;
 		hvacPing = false;
+		interest = new Kinematic();
+		interest.position = new Vector(viewWidth * Math.random(), viewHeight * Math.random());
 
+		constructWorld();
+
+		character = new DecisionActor(characterSpawn.x, characterSpawn.y, 100);
+		monster = new DecisionActor(monsterSpawn.x, monsterSpawn.y, 80);
+		breadcrumbs = new Breadcrumbs(20, 0.1);
+
+		PApplet.main("execution.LearningDecisionTreeView");
+	}
+
+	private static void constructWorld() {
 		fridgePos = new Vector(125, viewHeight - 160);
 		tvPos = new Vector(280, viewHeight - 305);
 		hvacPos = new Vector(545, viewHeight - 85);
 		breakerPos = new Vector(92, viewHeight - 233);
-		safezonePos = new Vector(200, viewHeight - 385);
+		characterSpawn = new Vector(200, viewHeight - 385);
+		monsterSpawn = new Vector(530, viewHeight - 230);
 
-		character = new DecisionActor(safezonePos.x, safezonePos.y, 100);
-		breadcrumbs = new Breadcrumbs(20, 0.1);
+		livingRoom = new Room(new Vector(239, viewHeight - 521), new Vector(468, viewHeight - 19));
+		hallway = new Room(new Vector(29, viewHeight - 256), new Vector(239, viewHeight - 187));
+		kitchen = new Room(new Vector(70, viewHeight - 187), new Vector(240, viewHeight - 20));
+		foyer = new Room(new Vector(469, viewHeight - 100), new Vector(572, viewHeight - 21));
+		balcony = new Room(new Vector(238, viewHeight - 666), new Vector(423, viewHeight - 524));
+		bedroom1 = new Room(new Vector(29, viewHeight - 670), new Vector(238, viewHeight - 426));
+		bathroom1 = new Room(new Vector(31, viewHeight - 424), new Vector(136, viewHeight - 258));
+		closet1 = new Room(new Vector(135, viewHeight - 425), new Vector(235, viewHeight - 315));
+		bedroom2 = new Room(new Vector(469, viewHeight - 522), new Vector(668, viewHeight - 272));
+		bathroom2 = new Room(new Vector(575, viewHeight - 272), new Vector(670, viewHeight - 104));
+		closet2 = new Room(new Vector(471, viewHeight - 272), new Vector(572, viewHeight - 165));
 
-		PApplet.main("execution.DecisionTreeView");
+		apartment = new Apartment();
+		apartment.add(livingRoom);
+		apartment.add(hallway);
+		apartment.add(kitchen);
+		apartment.add(foyer);
+		apartment.add(balcony);
+		apartment.add(bedroom1);
+		apartment.add(bathroom1);
+		apartment.add(closet1);
+		apartment.add(bedroom2);
+		apartment.add(bathroom2);
+		apartment.add(closet2);
 	}
 
 	private void constructDictionaries() {
@@ -94,13 +155,55 @@ public class DecisionTreeView extends PApplet {
 				return hvacPing;
 			}
 		});
+		attributeDict.put("exposed", new Attribute() {
+
+			@Override
+			public boolean getValue() {
+				return !closet1.contains(character.getKinematic().position);
+			}
+		});
+		attributeDict.put("audible", new Attribute() {
+
+			@Override
+			public boolean getValue() {
+				AStar astar = new AStar();
+				Euclidian euclidian = new Euclidian();
+				Path path = astar.path(tileGraph, tileGraph.closestTo(monster.getKinematic().position),
+						tileGraph.closestTo(character.getKinematic().position), euclidian);
+				return path.size() <= hearDistance;
+			}
+		});
+		attributeDict.put("visible", new Attribute() {
+
+			@Override
+			public boolean getValue() {
+				return apartment.locate(character.getKinematic().position) == apartment
+						.locate(monster.getKinematic().position);
+			}
+		});
+		attributeDict.put("validTarget", new Attribute() {
+
+			@Override
+			public boolean getValue() {
+				return !closet1.contains(interest.position);
+			}
+		});
 
 		behaviorDict = new HashMap<String, SteeringBehavior>();
-		behaviorDict.put("goToFridge", new PathTo(character.getKinematic(), tileGraph, fridgePos, 800, 400));
-		behaviorDict.put("goToTv", new PathTo(character.getKinematic(), tileGraph, tvPos, 800, 400));
-		behaviorDict.put("goToHvac", new PathTo(character.getKinematic(), tileGraph, hvacPos, 800, 400));
-		behaviorDict.put("goToBreaker", new PathTo(character.getKinematic(), tileGraph, breakerPos, 800, 400));
-		behaviorDict.put("goToSafezone", new PathTo(character.getKinematic(), tileGraph, safezonePos, 800, 400));
+		behaviorDict.put("goToFridge",
+				new PathTo(character.getKinematic(), tileGraph, fridgePos, maxAcceleration, maxSpeed));
+		behaviorDict.put("goToTv", new PathTo(character.getKinematic(), tileGraph, tvPos, maxAcceleration, maxSpeed));
+		behaviorDict.put("goToHvac",
+				new PathTo(character.getKinematic(), tileGraph, hvacPos, maxAcceleration, maxSpeed));
+		behaviorDict.put("goToBreaker",
+				new PathTo(character.getKinematic(), tileGraph, breakerPos, maxAcceleration, maxSpeed));
+		behaviorDict.put("goToSafezone",
+				new PathTo(character.getKinematic(), tileGraph, characterSpawn, maxAcceleration, maxSpeed));
+		behaviorDict.put("chase", new Chase(monster.getKinematic(), tileGraph, character.getKinematic(),
+				maxAcceleration / 2, maxSpeed / 2));
+		behaviorDict.put("investigate", new Chase(monster.getKinematic(), tileGraph,
+				character.getKinematic(), maxAcceleration / 8, maxSpeed / 8));
+		behaviorDict.put("wander", new Chase(monster.getKinematic(), tileGraph, interest, maxAcceleration / 2, maxSpeed / 2));
 	}
 
 	private void buildCharacterTree() {
@@ -118,7 +221,19 @@ public class DecisionTreeView extends PApplet {
 		characterTree.add(new Action("goToHvac", "c1"), "c", true);
 		characterTree.add(new Action("goToSafezone", "d"), "c", false);
 	}
-
+	
+	private void loadMonsterTree() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("learnedTree.txt"));
+			monsterTree = new DecisionTree((DecisionTreeNode) in.readObject());
+			in.close();
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public void settings() {
 		size(viewWidth, viewHeight);
 	}
@@ -130,6 +245,7 @@ public class DecisionTreeView extends PApplet {
 		renderTileGraph();
 		constructDictionaries();
 		buildCharacterTree();
+		loadMonsterTree();
 		timestamp = System.nanoTime();
 	}
 
@@ -137,22 +253,20 @@ public class DecisionTreeView extends PApplet {
 		long timestampPrev = timestamp;
 		timestamp = System.nanoTime();
 		dt = (timestamp - timestampPrev) / 1000000000.0;
-		aidt += dt;
 		image(img, 0, 0);
-		renderTileGraph();
 
-		if (aidt > 0.5) {
-			character.setBehavior(behaviorDict.get(characterTree.makeDecision(attributeDict)), "boop");
-			randomizePings();
-			aidt = 0;
-		}
+		character.setBehavior(behaviorDict.get(characterTree.makeDecision(attributeDict)), "boop");
+		monster.setBehavior(behaviorDict.get(monsterTree.makeDecision(attributeDict)), "beep");
+		randomizePings();
 
 		character.update(dt);
+		monster.update(dt);
 		breadcrumbs.add(character.getKinematic().position, timestamp);
-		updatePings();
+		handleCollisions();
 		renderPings();
-		renderBreadcrumbs(breadcrumbs);
+		// renderBreadcrumbs(breadcrumbs);
 		renderActor(character);
+		renderActor(monster);
 	}
 
 	private void renderActor(Actor agent) {
@@ -168,6 +282,7 @@ public class DecisionTreeView extends PApplet {
 		ellipse(x, y, 2.0f * characterRadius, 2.0f * characterRadius);
 	}
 
+	@SuppressWarnings("unused")
 	private void renderBreadcrumbs(Breadcrumbs breadcrumbs) {
 		fill(0);
 		for (Vector crumb : breadcrumbs) {
@@ -195,26 +310,32 @@ public class DecisionTreeView extends PApplet {
 	}
 
 	private void randomizePings() {
-		double p = 0.98;
-		if (Math.random() > p)
+		if (Math.random() > pingRate)
 			fridgePing = true;
-		if (Math.random() > p)
+		if (Math.random() > pingRate)
 			tvPing = true;
-		if (Math.random() > p)
+		if (Math.random() > pingRate)
 			hvacPing = true;
+		if (Math.random() > wanderRate)
+			interest.position = new Vector(viewWidth * Math.random(), viewHeight * Math.random());
+
 	}
 
-	private void updatePings() {
-		if (character.getKinematic().position.isCloseTo(fridgePos, 10))
+	private void handleCollisions() {
+		if (character.getKinematic().position.isCloseTo(fridgePos, 12))
 			fridgePing = false;
-		if (character.getKinematic().position.isCloseTo(tvPos, 10))
+		if (character.getKinematic().position.isCloseTo(tvPos, 12))
 			tvPing = false;
-		if (character.getKinematic().position.isCloseTo(hvacPos, 10))
+		if (character.getKinematic().position.isCloseTo(hvacPos, 12))
 			hvacPing = false;
 		if (character.getKinematic().position.isCloseTo(breakerPos, 10)) {
 			fridgePing = false;
 			tvPing = false;
 			hvacPing = false;
+		}
+		if (character.getKinematic().position.isCloseTo(monster.getKinematic().position, 10)) {
+			character.getKinematic().position = characterSpawn.copy();
+			monster.getKinematic().position = monsterSpawn.copy();
 		}
 	}
 

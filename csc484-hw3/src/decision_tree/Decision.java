@@ -8,24 +8,32 @@ public class Decision extends DecisionTreeNode {
 
 	public DecisionTreeNode trueNode;
 	public DecisionTreeNode falseNode;
-	public String parameter;
+	public String attribute;
 
-	public Decision(String parameter, String id) {
-		super(id.hashCode());
+	public Decision(String attribute, String id) {
+		super(id);
 		this.trueNode = null;
 		this.falseNode = null;
-		this.parameter = parameter;
+		this.attribute = attribute;
+	}
+
+	public Decision() {
+		super("");
+		this.trueNode = null;
+		this.falseNode = null;
+		this.attribute = null;
 	}
 
 	@Override
-	public DecisionTreeNode makeDecision(HashMap<String, Parameter> parameters) {
+	public DecisionTreeNode makeDecision(HashMap<String, Attribute> attributes) {
 		DecisionTreeNode branch = null;
-		boolean b = parameters.get(parameter).getValue();
+		//System.out.println(id + " " + attribute);
+		boolean b = attributes.get(attribute).getValue();
 		if (b)
 			branch = trueNode;
 		else
 			branch = falseNode;
-		return branch.makeDecision(parameters);
+		return branch.makeDecision(attributes);
 	}
 
 }

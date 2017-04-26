@@ -9,12 +9,12 @@ public class Action extends DecisionTreeNode {
 	public String behavior;
 	
 	public Action(String behavior, String id) {
-		super(id.hashCode());
+		super(id);
 		this.behavior = behavior;
 	}
 
 	@Override
-	public DecisionTreeNode makeDecision(HashMap<String, Parameter> parameters) {
+	public DecisionTreeNode makeDecision(HashMap<String, Attribute> attributes) {
 		return this;
 	}
 }
