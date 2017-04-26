@@ -75,6 +75,8 @@ public class LearningDecisionTreeView extends PApplet {
 
 	private static Breadcrumbs breadcrumbs;
 
+	private static long initTimestamp;
+	private static int frameCount = 0;
 	public static PImage img;
 	public static AdjacencyList tileGraph;
 
@@ -239,6 +241,7 @@ public class LearningDecisionTreeView extends PApplet {
 	}
 
 	public void setup() {
+		frameRate(1000);
 		img = loadImage("living_room.png");
 		image(img, 0, 0);
 		buildTileGraph();
@@ -247,12 +250,15 @@ public class LearningDecisionTreeView extends PApplet {
 		buildCharacterTree();
 		loadMonsterTree();
 		timestamp = System.nanoTime();
+		initTimestamp = timestamp;
 	}
 
 	public void draw() {
 		long timestampPrev = timestamp;
 		timestamp = System.nanoTime();
 		dt = (timestamp - timestampPrev) / 1000000000.0;
+		frameCount++;
+		System.out.println(((timestamp - initTimestamp) / frameCount));
 		image(img, 0, 0);
 
 		character.setBehavior(behaviorDict.get(characterTree.makeDecision(attributeDict)), "boop");

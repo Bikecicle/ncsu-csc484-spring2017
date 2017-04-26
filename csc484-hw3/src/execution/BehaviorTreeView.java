@@ -27,7 +27,6 @@ import general.Vector;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
-import learning.Example;
 import path_finding.AStar;
 import path_finding.Euclidian;
 import path_finding.Path;
@@ -88,8 +87,10 @@ public class BehaviorTreeView extends PApplet {
 	public static PImage img;
 	public static AdjacencyList tileGraph;
 
+	private static long initTimestamp;
 	private static long timestamp;
 	private static double dt;
+	private static int frameCount = 0;
 
 	private static ObjectOutputStream dataOut;
 	private static String dataFileName = "data.txt";
@@ -284,6 +285,7 @@ public class BehaviorTreeView extends PApplet {
 	}
 
 	public void setup() {
+		frameRate(1000);
 		img = loadImage("living_room.png");
 		image(img, 0, 0);
 		buildTileGraph();
@@ -292,19 +294,22 @@ public class BehaviorTreeView extends PApplet {
 		buildCharacterTree();
 		buildMonsterTree();
 		timestamp = System.nanoTime();
+		initTimestamp = timestamp;
 	}
 
 	public void draw() {
 		long timestampPrev = timestamp;
 		timestamp = System.nanoTime();
 		dt = (timestamp - timestampPrev) / 1000000000.0;
+		frameCount++;
+		System.out.println(((timestamp - initTimestamp) / frameCount));
 		image(img, 0, 0);
 
 		character.setBehavior(behaviorDict.get(characterTree.makeDecision(attributeDict)), "boop");
 		monsterTree.run();
 		randomizePings();
 		
-
+/**
 		if (monster.action != null) {
 			Example example = new Example(monster.action);
 			example.attributes.put("exposed", attributeDict.get("exposed").getValue());
@@ -319,7 +324,7 @@ public class BehaviorTreeView extends PApplet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 
 		character.update(dt);
