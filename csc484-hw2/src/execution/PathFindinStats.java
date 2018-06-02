@@ -47,16 +47,19 @@ public class PathFindinStats {
 			Node start = graph.nodeList.get((int) (Math.random()*nodes));
 			Node end = graph.nodeList.get((int) (Math.random()*nodes));
 			
+			@SuppressWarnings("unused")
 			List<Edge> dpath = dijkstra.path(graph,start , end);
 			dtime += dijkstra.time;
 			dvisited += dijkstra.visited;
 			dlength += dijkstra.length;
 
+			@SuppressWarnings("unused")
 			List<Edge> epath = aStar.path(graph, start, end, new Euclidian());
 			etime += aStar.time;
 			evisited += aStar.visited;
 			elength += aStar.length;
 
+			@SuppressWarnings("unused")
 			List<Edge> mpath = aStar.path(graph, start, end, new Manhattan());
 			mtime += aStar.time;
 			mvisited += aStar.visited;

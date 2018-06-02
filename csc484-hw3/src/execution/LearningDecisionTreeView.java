@@ -85,6 +85,9 @@ public class LearningDecisionTreeView extends PApplet {
 
 
 	public static void main(String[] args) {
+		
+		ID3.run();
+		
 		fridgePing = false;
 		tvPing = false;
 		hvacPing = false;
@@ -242,7 +245,7 @@ public class LearningDecisionTreeView extends PApplet {
 
 	public void setup() {
 		frameRate(1000);
-		img = loadImage("living_room.png");
+		img = loadImage("living_room2.png");
 		image(img, 0, 0);
 		buildTileGraph();
 		renderTileGraph();

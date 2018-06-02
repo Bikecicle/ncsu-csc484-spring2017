@@ -27,6 +27,7 @@ import general.Vector;
 import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
+import learning.Example;
 import path_finding.AStar;
 import path_finding.Euclidian;
 import path_finding.Path;
@@ -286,7 +287,7 @@ public class BehaviorTreeView extends PApplet {
 
 	public void setup() {
 		frameRate(1000);
-		img = loadImage("living_room.png");
+		img = loadImage("living_room2.png");
 		image(img, 0, 0);
 		buildTileGraph();
 		renderTileGraph();
@@ -309,7 +310,6 @@ public class BehaviorTreeView extends PApplet {
 		monsterTree.run();
 		randomizePings();
 		
-/**
 		if (monster.action != null) {
 			Example example = new Example(monster.action);
 			example.attributes.put("exposed", attributeDict.get("exposed").getValue());
@@ -324,8 +324,7 @@ public class BehaviorTreeView extends PApplet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}*/
-
+		}
 
 		character.update(dt);
 		monster.update(dt);

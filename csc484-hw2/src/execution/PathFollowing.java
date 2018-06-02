@@ -8,7 +8,6 @@ import graph.AdjacencyList;
 import graph.Edge;
 import graph.Node;
 import path_finding.AStar;
-import path_finding.Euclidian;
 import path_finding.Manhattan;
 import path_finding.Path;
 import processing.core.PApplet;
@@ -46,7 +45,7 @@ public class PathFollowing extends PApplet {
 	}
 
 	public void setup() {
-		img = loadImage("living_room.png");
+		img = loadImage("living_room1.png");
 		image(img, 0, 0);
 		buildTileGraph();
 		timestamp = System.nanoTime();
@@ -92,6 +91,7 @@ public class PathFollowing extends PApplet {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void renderTileGraph() {
 		for (Node node : tileGraph.nodeList) {
 			ellipse((float) node.position.x, (float) (viewHeight - node.position.y), 3f, 3f);

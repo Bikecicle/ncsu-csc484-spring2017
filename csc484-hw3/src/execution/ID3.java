@@ -18,7 +18,7 @@ import learning.Example;
 public class ID3 {
 
 	@SuppressWarnings("unchecked")
-	public static void main(String[] args) {
+	public static void run() {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data.txt"));
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("learnedTree.txt"));
